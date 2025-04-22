@@ -1,0 +1,36 @@
+import 'package:hive/hive.dart';
+
+class HiveManager<T> {
+  final String boxName;
+
+  HiveManager({required this.boxName});
+
+  // Open the Hive box
+  Future<Box<T>> _openBox() async {
+    return await Hive.openBox<T>(boxName);
+  }
+
+  // Save the item in Hive
+  Future<void> saveItem(String key, T item) async {
+    final box = await _openBox();
+    await box.put(key, item);
+  }
+
+  // Get the item from Hive
+  Future<T?> getItem(String key) async {
+    final box = await _openBox();
+    return box.get(key);
+  }
+
+  // Clear the item from Hive
+  Future<void> clearItem(String key) async {
+    final box = await _openBox();
+    await box.delete(key);
+  }
+
+  // Check if the item exists in Hive
+  Future<bool> itemExists(String key) async {
+    final box = await _openBox();
+    return box.containsKey(key);
+  }
+}

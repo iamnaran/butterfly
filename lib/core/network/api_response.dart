@@ -1,4 +1,4 @@
-import 'package:butterfly/network/status.dart';
+import 'package:butterfly/network/api_status.dart';
 
 class ApiResponse<T> {
 
