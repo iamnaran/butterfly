@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:butterfly/data/app_exception.dart';
+import 'package:butterfly/utils/app_exception.dart';
 import 'package:butterfly/network/base_api_services.dart';
 import 'package:http/http.dart' as http;
 
