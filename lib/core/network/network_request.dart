@@ -1,4 +1,5 @@
 import 'package:butterfly/core/network/base/resource.dart';
+import 'package:butterfly/utils/app_logger.dart';
 
 typedef FetchFromApi<T> = Future<T> Function();
 typedef SaveResult<T> = Future<void> Function(T item);
@@ -19,6 +20,8 @@ class NetworkRequest<T> {
     // Check if we should fetch new data from API
     if (shouldFetch(localData)) {
       yield Resource.loading(data: localData); // Show loading state
+
+      AppLogger.showError("Network Request Called");
 
       try {
         // Fetch new data from API

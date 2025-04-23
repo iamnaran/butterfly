@@ -18,7 +18,10 @@ class Networkapiservice extends IApiServices {
 
     dynamic responseJson;
     try {
-      final response = await http.get(Uri.parse(url)).timeout(Duration(seconds: 10));
+      final response = await http.get(Uri.parse(url),  headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }).timeout(Duration(seconds: 10));
       responseJson = returnHttpResponse(response);
     } on SocketException {
         throw FetchDataException("No Internet Connection");
@@ -30,9 +33,16 @@ class Networkapiservice extends IApiServices {
 
   @override
   Future getPostApiResponse(String url, data) async {
+
+    AppLogger.showError("Login API Called");
+
     dynamic responseJson;
     try {
-      final response = await http.post(Uri.parse(url), body: data).timeout(Duration(seconds: 10));
+      final response = await http.post(Uri.parse(url), body: data,
+      headers: {
+        'Accept': 'application/json',
+      }
+      ).timeout(Duration(seconds: 10));
 
       AppLogger.showError("Login API in Network Service: $url, Data: $data");
 

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:butterfly/core/database/entity/user/user_entity.dart';
 import 'package:butterfly/core/database/hive_db_manager.dart';
 import 'package:butterfly/core/model/auth/auth_mapper.dart';
+import 'package:butterfly/core/model/auth/user/user_response.dart';
 import 'package:butterfly/core/network/services/api_services.dart';
 import 'package:butterfly/core/network/base/endpoints.dart';
 import 'package:butterfly/core/network/base/resource.dart';
@@ -35,9 +38,11 @@ final HiveDbManager _hiveManager;
           // Fetch the user data from the API
           final response = await networkapiservice.getPostApiResponse(url, data);
           AppLogger.showError(response.toString());
-          return AuthMapper.mapUserResponseToEntity(response);
+          final Map<String, dynamic> jsonMap = jsonDecode(response);
+          final userResponse = UserResponse.fromJson(jsonMap);
+          return AuthMapper.mapUserResponseToEntity(userResponse);
         } catch (e) {
-          AppLogger.showError(e.toString());
+          AppLogger.showError("Login API Error: $e");
           throw Exception('Login failed: $e');
         }
       },
@@ -45,7 +50,6 @@ final HiveDbManager _hiveManager;
         await _hiveManager.saveLoggedInUser(userEntity!);
       },
       shouldFetch: (localData) {
-        // Always fetch from API for login
         return true;
       },
     );
