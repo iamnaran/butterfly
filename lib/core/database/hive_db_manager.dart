@@ -53,14 +53,9 @@ class HiveDbManager {
     await clearItem<UserEntity>(HiveConstants.userBox, HiveConstants.keyLoggedInUser);
   }
 
-  // Save the login status
-  Future<void> saveUserLoggedInStatus(bool isLoggedIn) async {
-    await saveItem<bool>(HiveConstants.userBox, HiveConstants.keyIsUserLoggedIn, isLoggedIn);
-  }
-
-  // Get the login status
-  Future<bool?> getUserLoggedInStatus() async {
-    return await getItem<bool>(HiveConstants.userBox, HiveConstants.keyIsUserLoggedIn);
+   Future<bool> getUserLoggedInStatus() async {
+    final user = await getLoggedInUser();
+    return user != null;
   }
 
 
