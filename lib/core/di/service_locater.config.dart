@@ -17,6 +17,7 @@ import 'package:butterfly/core/repository/auth/auth_repository_impl.dart'
     as _i895;
 import 'package:butterfly/ui/auth/bloc/login_bloc.dart' as _i195;
 import 'package:butterfly/ui/home/bloc/home_bloc.dart' as _i510;
+import 'package:butterfly/ui/home/bottomnav/BottomNavCubit.dart' as _i622;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -31,6 +32,7 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    gh.factory<_i622.BottomNavCubit>(() => _i622.BottomNavCubit());
     gh.lazySingleton<_i226.HiveDbManager>(() => _i226.HiveDbManager());
     gh.lazySingleton<_i318.IApiServices>(() => _i510.Networkapiservice());
     gh.factory<_i510.HomeBloc>(() => _i510.HomeBloc(gh<_i226.HiveDbManager>()));
