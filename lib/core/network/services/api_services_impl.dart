@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:butterfly/utils/app_exception.dart';
 import 'package:butterfly/core/network/services/api_services.dart';
+import 'package:butterfly/utils/app_logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 
@@ -32,10 +33,15 @@ class Networkapiservice extends IApiServices {
     dynamic responseJson;
     try {
       final response = await http.post(Uri.parse(url), body: data).timeout(Duration(seconds: 10));
+
+      AppLogger.showError("Login API in Network Service: $url, Data: $data");
+
       responseJson = returnHttpResponse(response);
     } on SocketException {
+        AppLogger.showError("Login API Error in Network Service:");
         throw FetchDataException("No Internet Connection");
     }
+     AppLogger.showError("Login API Response in Network Service: $url, Response: ${responseJson.toString()}");
     return responseJson;
   }
 

@@ -25,9 +25,12 @@ final HiveDbManager _hiveManager;
       'password': password,
     };
 
+    AppLogger.showError("Login URL: $url, Data: $data");
     // Create the NetworkRequest with logic for login
     final networkRequest = NetworkRequest<UserEntity?>(
       fetchFromApi: () async {
+        AppLogger.showError("Login Api Requested");
+
         try {
           // Fetch the user data from the API
           final response = await networkapiservice.getPostApiResponse(url, data);
