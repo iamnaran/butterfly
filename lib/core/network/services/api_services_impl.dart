@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:butterfly/utils/app_exception.dart';
-import 'package:butterfly/core/network/base_api_services.dart';
+import 'package:butterfly/core/network/services/api_services.dart';
 import 'package:http/http.dart' as http;
+import 'package:injectable/injectable.dart';
 
-class Networkapiservice extends BaseApiServices {
+@LazySingleton(as : IApiServices)
+class Networkapiservice extends IApiServices {
 
   @override
   Future getDeleteApiResponse(String url) {

@@ -1,5 +1,5 @@
-// ignore_for_file: file_names
-import 'package:butterfly/network/api_status.dart';
+
+import 'package:butterfly/core/network/base/api_status.dart';
 
 class Resource<T> {
   final ApiStatus status;

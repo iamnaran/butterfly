@@ -1,28 +1,39 @@
-import 'package:butterfly/core/repository/auth_repository.dart';
-import 'package:butterfly/ui/auth/bloc/login_event.dart';
-import 'package:butterfly/ui/auth/bloc/login_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:butterfly/core/database/entity/user/user_entity.dart';
+import 'package:butterfly/core/repository/auth/auth_repository.dart';
+import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
 
+part 'login_event.dart';
+part 'login_state.dart';
+
+@injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
-  final AuthRepository authRepository;
+  final IAuthRepository authRepository;
+
 
   LoginBloc(this.authRepository) : super(LoginInitial()) {
-    on<LoginRequestEvent>(_onLoginRequest);
+    on<LoginRequested>(_onLoginRequested);
   }
 
-  Future<void> _onLoginRequest(
-    LoginRequest event,
-    Emitter<LoginState> emit,
-  ) async {
+   Future<void> _onLoginRequested(LoginRequested event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
-
+    
     try {
-      
-     
+      final responseStream = authRepository.login(event.username, event.password);
+      final result = await responseStream.first;
+
+      if (result.isSuccess && result.data != null) {
+        emit(LoginSuccess(result.data!));
+      } else {
+        emit(LoginFailure(result.message ?? 'Login failed'));
+      }
     } catch (e) {
-      emit(LoginFailure("Unexpected error: ${e.toString()}"));
+      emit(LoginFailure('Login failed: $e'));
     }
   }
+
+  
   
 }

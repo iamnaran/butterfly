@@ -1,7 +1,7 @@
-import 'package:butterfly/core/database/entity/user_entity.dart';
-import 'package:butterfly/core/model/auth/user_response.dart';
+import 'package:butterfly/core/database/entity/user/user_entity.dart';
+import 'package:butterfly/core/model/auth/user/user_response.dart';
 
-class UserMapper {
+class AuthMapper {
   // Method to map UserResponse to UserEntity
   static Future<UserEntity> mapUserResponseToEntity(UserResponse userResponse) async {
     return UserEntity(
