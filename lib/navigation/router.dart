@@ -5,6 +5,7 @@ import 'package:butterfly/ui/auth/login_screen.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
+import 'package:butterfly/ui/home/bottombar/explore/details/product_detail_screen.dart';
 import 'package:butterfly/ui/home/bottombar/explore/explore_screen.dart';
 import 'package:butterfly/ui/home/bottombar/profile/profile_screen.dart';
 import 'package:butterfly/ui/home/bottombar/search/search_screen.dart';
@@ -48,6 +49,17 @@ class AppRouter {
                         child: const ExploreScreen(),
                       ),
                 ),
+                routes: [
+                  // Product Detail Page
+                  GoRoute(
+                    path: r'product/:productId',
+                    name: Routes.productDetailRouteName,
+                    builder: (context, state) {
+                      final productId = int.parse(state.pathParameters['productId']!);
+                      return ProductDetailScreen(productId: productId);
+                    },
+                ),
+              ],
             ),
 
             GoRoute(

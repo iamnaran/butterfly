@@ -12,6 +12,9 @@ class Routes {
   static const String explorePath = '/explore';
   static const String exploreRouteName = 'explore';
 
+  static const String productDetailPath = '/product'; // Parameter ID
+  static const String productDetailRouteName = 'productDetail';
+
   static const String profilePath = '/profile';
   static const String profileRouteName = 'profile';
 

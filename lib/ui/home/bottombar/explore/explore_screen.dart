@@ -1,8 +1,10 @@
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
+import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -49,13 +51,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
     }
   }
 
-  Widget _buildProductList(List<ProductEntity> products) {
-    return ListView.builder(
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final product = products[index];
-        return Container(
+Widget _buildProductList(List<ProductEntity> products) {
+  return ListView.builder(
+    itemCount: products.length,
+    itemBuilder: (context, index) {
+
+      final product = products[index];
+
+      return GestureDetector(
+        onTap: () {
+          context.pushNamed(
+            Routes.productDetailRouteName,
+            pathParameters: {'productId': product.id.toString()},
+          );
+        },
+        child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0),
             color: Colors.white,
@@ -68,9 +80,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ],
           ),
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
                 child: CachedNetworkImage(
@@ -90,10 +104,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   ),
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
                     if (product.category.isNotEmpty)
                       Container(
@@ -107,16 +123,21 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           style: const TextStyle(fontSize: 12, color: Colors.black87),
                         ),
                       ),
+
                     const SizedBox(height: 8.0),
+
                     Text(
                       product.title,
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
+
                     const SizedBox(height: 4.0),
+
                     Text(
                       'Price: \$${product.price.toStringAsFixed(2)}',
                       style: const TextStyle(fontSize: 16, color: Colors.green),
                     ),
+
                     if (product.description.isNotEmpty)
                       Text(
                         product.description,
@@ -129,9 +150,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ],
           ),
-        );
-      },
-    );
-  }
-
+        ),
+      );
+    },
+  );
+}
 }

@@ -45,13 +45,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      
                       const Text(
                         'Welcome Back 👋',
                         style: TextStyle(
                             fontSize: 28, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
+                      
                       const SizedBox(height: 32),
+
                       AppTextField(
                         label: 'Email',
                         icon: Icons.email,
@@ -61,14 +64,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? 'Enter email'
                             : null,
                       ),
+
                       const SizedBox(height: 16),
+
                       PasswordTextField(
                         controller: _passwordCtrl,
                         validator: (value) => value == null || value.length < 6
                             ? 'Minimum 6 chars'
                             : null,
                       ),
+                      
                       const SizedBox(height: 24),
+
                       PrimaryButton(
                         label: 'Login',
                         isLoading: isLoading,
@@ -79,7 +86,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               LoginRequested(username: email, password: password));
                         },
                       ),
+
                       const SizedBox(height: 24),
+                      
                       TextButton(
                         onPressed: () {},
                         child: const Text("Forgot password?"),
