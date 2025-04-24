@@ -17,13 +17,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 final getIt = GetIt.instance;
 
 Future<void> configureDependenciesInjection() async {
-
   // For Local Values & Status
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferences>(sharedPreferences);
 
   getIt.registerLazySingleton<PreferenceManager>(
-        () => PreferenceManager(getIt.get<SharedPreferences>()),
+    () => PreferenceManager(getIt.get<SharedPreferences>()),
   );
 
   // Register NetworkApiService
@@ -31,34 +30,35 @@ Future<void> configureDependenciesInjection() async {
 
   // Register PrefManager
   getIt.registerLazySingleton<IAuthRepository>(
-        () => AuthRepositoryImpl(getIt.get<IApiServices>(), getIt.get<UserDatabaseManager>(), getIt.get<PreferenceManager>()),
+    () => AuthRepositoryImpl(getIt.get<IApiServices>(),
+        getIt.get<UserDatabaseManager>(), getIt.get<PreferenceManager>()),
   );
 
   // Hive DB Managers Injections
-  getIt.registerLazySingleton<ProductDatabaseManager>(() => ProductDatabaseManager());
+  getIt.registerLazySingleton<ProductDatabaseManager>(
+      () => ProductDatabaseManager());
   getIt.registerLazySingleton<UserDatabaseManager>(() => UserDatabaseManager());
-
 
   // Repository Injections
   getIt.registerLazySingleton<IExploreRepository>(
-        () => ExploreRepositoryImpl(getIt.get<IApiServices>(), getIt.get<ProductDatabaseManager>()),
+    () => ExploreRepositoryImpl(
+        getIt.get<IApiServices>(), getIt.get<ProductDatabaseManager>()),
   );
 
   // Bloc Injections
   getIt.registerFactory<LoginBloc>(
-        () => LoginBloc(getIt.get<IAuthRepository>()),
+    () => LoginBloc(getIt.get<IAuthRepository>()),
   );
 
   getIt.registerFactory<HomeBloc>(
-        () => HomeBloc(getIt.get<IAuthRepository>()),
+    () => HomeBloc(getIt.get<IAuthRepository>()),
   );
 
   getIt.registerFactory<ExploreBloc>(
-        () => ExploreBloc(getIt.get<IExploreRepository>()),
+    () => ExploreBloc(getIt.get<IExploreRepository>()),
   );
 
-  getIt.registerLazySingleton<BottomNavCubit>(
-        () => BottomNavCubit(),
+  getIt.registerFactory<BottomNavCubit>(
+    () => BottomNavCubit(),
   );
-
 }

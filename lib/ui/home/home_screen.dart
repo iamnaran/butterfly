@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
-
   const HomeScreen({super.key, required this.child});
 
   final Widget child;
@@ -17,20 +16,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
-    _updateSelectedIndex(context);
-  }
-   @override
-  void didUpdateWidget(covariant HomeScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _updateSelectedIndex(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateSelectedIndex(context);
+    });
   }
 
-   void _updateSelectedIndex(BuildContext context) {
-    final currentRoute = GoRouter.of(context).routeInformationProvider.value.uri.path;
+  @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateSelectedIndex(context);
+    });
+  }
+
+  void _updateSelectedIndex(BuildContext context) {
+    final currentRoute =
+        GoRouter.of(context).routeInformationProvider.value.uri.path;
     final bottomNavCubit = context.read<BottomNavCubit>();
     if (currentRoute == '/profile') {
       bottomNavCubit.setIndex(1);
@@ -41,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-   void _onItemTapped(int index) {
+  void _onItemTapped(int index) {
     context.read<BottomNavCubit>().setIndex(index);
     switch (index) {
       case 0:
@@ -56,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
@@ -86,9 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               currentIndex: selectedIndex,
               selectedItemColor: Colors.blue,
-              selectedFontSize: 12.0, 
-              unselectedFontSize: 12.0, 
-              onTap: _onItemTapped,
+              selectedFontSize: 12.0,
+              unselectedFontSize: 12.0,
+              onTap: _onItemTapped, // Using the _onItemTapped function directly
             );
           },
         ),
@@ -96,8 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-   AppBar _buildAppBar(BuildContext context) {
-    final currentRoute = GoRouter.of(context).routeInformationProvider.value.uri.path;
+  AppBar _buildAppBar(BuildContext context) {
+    final currentRoute =
+        GoRouter.of(context).routeInformationProvider.value.uri.path;
     final ThemeData theme = Theme.of(context);
 
     String title = '';
@@ -118,15 +123,13 @@ class _HomeScreenState extends State<HomeScreen> {
               context.read<HomeBloc>().add(LogoutUser());
             }
           },
-          icon: const Icon(Icons.account_circle), 
+          icon: const Icon(Icons.account_circle),
         ),
       );
     } else if (currentRoute == Routes.profilePath) {
       title = 'Profile';
-      
     } else if (currentRoute == Routes.searchPath) {
       title = 'Search';
-     
     }
 
     return AppBar(
@@ -136,5 +139,4 @@ class _HomeScreenState extends State<HomeScreen> {
       actions: actions,
     );
   }
-  
 }
