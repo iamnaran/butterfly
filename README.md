@@ -1,17 +1,65 @@
-# butterfly
+# 🚀 Butterfly App - Flutter 2025 Project Template
 
-A new Flutter project.
+A scalable, production-ready Flutter project boilerplate for 2025 — featuring modern architecture and offline-first capabilities. Built with **BLoC**, **Feature-Based Modularity**, and **Repository Pattern**, this template is designed to help you kickstart your next app efficiently and cleanly.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🧱 Project Structure
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+lib/
+├── core/                   # Core utilities, constants, error handling
+│   ├── network/            # Network client, interceptors, API base
+│   ├── di/                 # Dependency injection setup (GetIt + Injectable)
+│   └── services/           # Shared Preferences, Connectivity, Logger, etc.
+├── data/                  
+│   ├── local/              # Hive DB manager, shared_pref helper
+│   ├── remote/             # API services
+│   └── repositories/       # Implementation of repository interfaces
+├── domain/                
+│   ├── entities/           # Models/entities
+│   └── repositories/       # Abstract repository contracts
+├── features/              # Feature-based folders
+│   ├── auth/               # Login, signup flows
+│   ├── home/               # Home page with bottom navigation
+│   └── ...                 # Additional modules
+└── main.dart             # App entry point
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# butterfly
+## 🚀 Key Features
+
+- ✅ **Feature-Based Architecture** for better scalability and modular development
+- ✅ **BLoC (flutter_bloc)** for state management
+- ✅ **Hive** for offline local storage (via a separate database manager)
+- ✅ **Shared Preferences** for storing small flags (e.g., first-time login)
+- ✅ **GetIt + Injectable** for dependency injection
+- ✅ **Repository Pattern** with Network Bound Resource to manage data flow
+- ✅ **Offline-First Architecture**
+- ✅ **Login Flow -> Bottom Navigation** with persistent session
+- ✅ **Support for clean and testable code**
+
+---
+
+## 📆 Roadmap
+
+- [ ] Splash Screen
+- [ ] UI Improvements
+- [ ] CI/CD Integration
+- [ ] Dark Mode & Theme Support
+- [ ] Localization
+- [ ] Unit and Widget Tests
+
+---
+
+## ✍️ Contributing
+
+Feel free to fork and contribute to this template. PRs are welcome!
+
+---
+
+## 🙏 Credits
+
+Crafted with ❤️ 
+
