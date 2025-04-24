@@ -4,6 +4,9 @@ A scalable, production-ready Flutter project boilerplate for 2025 — featuring 
 
 ---
 
+![App Preview](preview/showcase.png)
+
+
 ## 🧱 Project Structure
 
 ```bash
@@ -59,7 +62,7 @@ Feel free to fork and contribute to this template. PRs are welcome!
 
 ---
 
-## 🙏 Credits
+
 
 Crafted with ❤️ 
 
