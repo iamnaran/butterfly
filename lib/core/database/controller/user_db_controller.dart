@@ -1,1 +1,0 @@
-// todo separate hive db , make it like a dao for db transactions

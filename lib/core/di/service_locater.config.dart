@@ -8,6 +8,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:butterfly/core/database/controller/product_db_manager.dart'
+    as _i348;
 import 'package:butterfly/core/database/hive_db_manager.dart' as _i226;
 import 'package:butterfly/core/network/services/api_services.dart' as _i318;
 import 'package:butterfly/core/network/services/api_services_impl.dart'
@@ -39,6 +41,8 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.factory<_i642.BottomNavCubit>(() => _i642.BottomNavCubit());
+    gh.factory<_i348.ProductDatabaseManager>(
+        () => _i348.ProductDatabaseManager());
     gh.lazySingleton<_i226.HiveDbManager>(() => _i226.HiveDbManager());
     gh.lazySingleton<_i318.IApiServices>(() => _i510.Networkapiservice());
     gh.factory<_i510.HomeBloc>(() => _i510.HomeBloc(gh<_i226.HiveDbManager>()));
@@ -51,12 +55,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i226.IExploreRepository>(
         () => _i834.ExploreRepositoryImpl(
               gh<_i318.IApiServices>(),
-              gh<_i226.HiveDbManager>(),
+              gh<_i348.ProductDatabaseManager>(),
             ));
-    gh.factory<_i156.ExploreBloc>(
-        () => _i156.ExploreBloc(gh<_i226.IExploreRepository>()));
     gh.factory<_i195.LoginBloc>(
         () => _i195.LoginBloc(gh<_i1026.IAuthRepository>()));
+    gh.factory<_i156.ExploreBloc>(
+        () => _i156.ExploreBloc(gh<_i226.IExploreRepository>()));
     return this;
   }
 }

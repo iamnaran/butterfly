@@ -49,32 +49,29 @@ class HiveDbManager {
   }
 
   Future<void> saveProductList(List<ProductEntity> products) async {
-    if (products.isEmpty) {
-      AppLogger.showError("Product list is empty, not saving to Hive");
-      return;
-    }
     final box = await _getProductListBox();
-    if(box.isEmpty){
-      AppLogger.showError("Save Product Box is Empty");
-    }
-    AppLogger.showError("Save Product Box has value");
     await box.put(HiveConstants.keyProductList, products);
-    AppLogger.showError("Product list saved to Hive: ${box.get(HiveConstants.keyProductList)}");
-
+    AppLogger.showError(
+        "Product list saved to Hive: ${box.get(HiveConstants.keyProductList)}");
   }
 
- Future<List<ProductEntity>?> getProductList() async {
+  Future<List<ProductEntity>?> getProductList() async {
     final box = await _getProductListBox();
-    if(box.isEmpty){
-      AppLogger.showError("Get Product Box is Empty");
-    }
-    AppLogger.showError("Get Product Box has value");
+  
+    AppLogger.showError("Get Product Box has value AAAA");
+    
     return box.get(HiveConstants.keyProductList);
+  }
+
+  Stream<List<ProductEntity>?> getProductListStream() async* {
+    final box = await _getProductListBox();
+    final stream = box.watch(key: HiveConstants.keyProductList);
+    yield box.get(HiveConstants.keyProductList);
+    yield* stream.map((event) => box.get(HiveConstants.keyProductList));
   }
 
   Future<void> clearProductList() async {
     final box = await _getProductListBox();
     await box.delete(HiveConstants.keyProductList);
   }
-
 }

@@ -8,7 +8,7 @@ class HiveConstants {
   static const String keyIsUserLoggedIn = 'keyIsUserLoggedIn';
 
 
-  static const String productBox = 'productListBox';
-  static const String keyProductList = 'keyProductListBox';
+  static const String productBox = 'productListBoxNew';
+  static const String keyProductList = 'keyProductListBoxNew';
 
 }

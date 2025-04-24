@@ -20,10 +20,9 @@ class NetworkBoundResource<T> {
 
   Stream<Resource<T>> asStream() async* {
     try {
-      // Emit initial DB data (if any)
       await for (final localData in loadFromDb()) {
         yield Resource.success(data: localData);
-        break; // Only emit the first DB data immediately
+        break; 
       }
 
       final currentDbData = await loadFromDb().first;

@@ -48,7 +48,7 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
         }
       },
       onError: (error, _) {
-        return ProductListError(message: 'Unexpected error occurred');
+        return ProductListError(message: 'Unexpected error occurred $error');
       },
     );
   }

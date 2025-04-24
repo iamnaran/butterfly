@@ -42,11 +42,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       return Stack(
         children: [
           _buildProductList(previousProducts),
-          const Opacity(
-            opacity: 0.7,
-            child: ModalBarrier(dismissible: false, color: Colors.grey),
-          ),
-          const Center(child: CircularProgressIndicator()),
         ],
       );
     } else {
@@ -100,7 +95,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (product.category != null && product.category!.isNotEmpty)
+                    if (product.category.isNotEmpty)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                         decoration: BoxDecoration(
@@ -108,7 +103,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Text(
-                          product.category!,
+                          product.category,
                           style: const TextStyle(fontSize: 12, color: Colors.black87),
                         ),
                       ),
@@ -122,9 +117,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       'Price: \$${product.price.toStringAsFixed(2)}',
                       style: const TextStyle(fontSize: 16, color: Colors.green),
                     ),
-                    if (product.description != null && product.description!.isNotEmpty)
+                    if (product.description.isNotEmpty)
                       Text(
-                        product.description!,
+                        product.description,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontSize: 14, color: Colors.grey),
