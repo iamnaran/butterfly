@@ -1,6 +1,5 @@
-import 'package:butterfly/core/database/hive_db_manager.dart';
 import 'package:butterfly/core/database/hive_initalizer.dart';
-import 'package:butterfly/core/di/service_locater.dart';
+import 'package:butterfly/core/di/di_module.dart';
 import 'package:butterfly/navigation/router.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHive();
   await configureDependenciesInjection();
-  final hive = getIt<HiveDbManager>();
-  final loggedInStatus = await hive.getUserLoggedInStatus();
+  final loggedInStatus = false;
   AppLogger.configureLogging();
   runApp(MyApp(isLoggedIn: loggedInStatus));
 }

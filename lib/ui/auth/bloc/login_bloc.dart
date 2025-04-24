@@ -5,16 +5,13 @@ import 'package:butterfly/core/network/base/resource.dart';
 import 'package:butterfly/core/repository/auth/auth_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:equatable/equatable.dart';
-import 'package:injectable/injectable.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
-@injectable
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   final IAuthRepository authRepository;
-
 
   LoginBloc(this.authRepository) : super(LoginInitial()) {
     on<LoginRequested>(_onLoginRequested);

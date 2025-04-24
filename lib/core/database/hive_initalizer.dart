@@ -9,6 +9,4 @@ Future<void> initHive() async {
   Hive.registerAdapter(UserEntityAdapter());
   Hive.registerAdapter(ProductEntityAdapter());
 
-
-
 }

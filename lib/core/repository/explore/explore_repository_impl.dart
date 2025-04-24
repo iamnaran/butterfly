@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:butterfly/core/database/controller/product_db_manager.dart';
+import 'package:butterfly/core/database/manager/product_db_manager.dart';
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
 import 'package:butterfly/core/model/explore/product_mapper.dart';
 import 'package:butterfly/core/model/explore/product_response.dart';
@@ -9,9 +9,7 @@ import 'package:butterfly/core/network/base/endpoints.dart';
 import 'package:butterfly/core/network/base/resource.dart';
 import 'package:butterfly/core/repository/explore/explore_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
-import 'package:injectable/injectable.dart';
 
-@LazySingleton(as: IExploreRepository)
 class ExploreRepositoryImpl extends IExploreRepository {
   final IApiServices networkapiservice;
   final ProductDatabaseManager _productDatabaseManager;

@@ -1,4 +1,4 @@
-import 'package:butterfly/core/di/service_locater.dart';
+import 'package:butterfly/core/di/di_module.dart';
 import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/auth/bloc/login_bloc.dart';
 import 'package:butterfly/ui/auth/login_screen.dart';

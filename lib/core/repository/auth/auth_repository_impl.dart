@@ -1,24 +1,24 @@
 import 'dart:convert';
 
 import 'package:butterfly/core/database/entity/user/user_entity.dart';
-import 'package:butterfly/core/database/hive_db_manager.dart';
+import 'package:butterfly/core/database/manager/user_db_manager.dart';
 import 'package:butterfly/core/model/auth/auth_mapper.dart';
 import 'package:butterfly/core/model/auth/user/user_response.dart';
 import 'package:butterfly/core/network/services/api_services.dart';
 import 'package:butterfly/core/network/base/endpoints.dart';
 import 'package:butterfly/core/network/base/resource.dart';
 import 'package:butterfly/core/network/network_request.dart';
+import 'package:butterfly/core/preference/pref_manager.dart';
 import 'package:butterfly/core/repository/auth/auth_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
-import 'package:injectable/injectable.dart';
 
-@LazySingleton(as : IAuthRepository)
 class AuthRepositoryImpl extends IAuthRepository{
 
 final IApiServices networkapiservice;
-final HiveDbManager _hiveManager;
+final UserDatabaseManager _userDatabaseManager;
+final PreferenceManager _preferenceManager;
 
-  AuthRepositoryImpl(this.networkapiservice, this._hiveManager, {required IApiServices apiServices, required HiveDbManager hiveManager});
+  AuthRepositoryImpl(this.networkapiservice, this._userDatabaseManager, this._preferenceManager);
 
    @override
     Stream<Resource<UserEntity?>> login(String username, String password) {
@@ -47,7 +47,8 @@ final HiveDbManager _hiveManager;
         }
       },
       saveApiResult: (userEntity) async {
-        await _hiveManager.saveLoggedInUser(userEntity!);
+        await _userDatabaseManager.saveUser(userEntity!);
+        await _preferenceManager.setLoggedIn(true);
       },
       shouldFetch: (localData) {
         return true;
@@ -57,5 +58,12 @@ final HiveDbManager _hiveManager;
 
     // Return the stream of the login process (API call and result saving)
     return networkRequest.asStream(null); // Passing `null` as no local data
+  }
+  
+  @override
+  void logout() {
+    _userDatabaseManager.deleteAllUsers();
+    _preferenceManager.setLoggedIn(false);
+    AppLogger.showError("User logged out");
   }
 }
