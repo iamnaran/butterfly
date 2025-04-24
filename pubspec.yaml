@@ -47,6 +47,8 @@ dependencies:
   equatable: ^2.0.5
   get_it: ^8.0.3
   injectable: ^2.5.0
+  cached_network_image: ^3.4.1
+
 
 
 
@@ -56,10 +58,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
-  json_serializable: ^6.7.1
-  hive_generator: ^2.0.1
+  json_serializable: ^6.9.0
   injectable_generator: ^2.6.0
   build_runner: ^2.4.7
+  hive_generator: ^2.0.1
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

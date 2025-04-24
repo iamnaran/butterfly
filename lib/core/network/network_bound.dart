@@ -19,29 +19,42 @@ class NetworkBoundResource<T> {
   });
 
   Stream<Resource<T>> asStream() async* {
-    // Start by yielding the current database data
-    yield* loadFromDb().asyncExpand((localData) async* {
-      // Check if we should fetch new data from API
-      if (shouldFetch(localData)) {
-        yield Resource.loading(data: localData); // Show loading state
-        
-        try {
-          // Fetch new data from API
-          final remoteData = await fetchFromApi();
-          
-          // Save the API result to the database
-          await saveApiResult(remoteData);
-          
-          // After successful fetch, load updated data from the DB
-          yield* loadFromDb().map((updatedDb) => Resource.success(data: updatedDb));
-        } catch (e) {
-          // Handle errors gracefully
-          yield Resource.failed(error: e is Exception ? e : Exception(e.toString()), data: localData);
-        }
-      } else {
-        // If no need to fetch, just emit local data
+    try {
+      // Emit initial DB data (if any)
+      await for (final localData in loadFromDb()) {
         yield Resource.success(data: localData);
+        break; // Only emit the first DB data immediately
       }
-    });
+
+      final currentDbData = await loadFromDb().first;
+
+      if (shouldFetch(currentDbData)) {
+        // Show loading with DB data fallback
+        yield Resource.loading(data: currentDbData);
+
+        try {
+          final apiData = await fetchFromApi();
+          await saveApiResult(apiData);
+
+          // Emit the updated DB data after saving
+          await for (final updatedDb in loadFromDb()) {
+            yield Resource.success(data: updatedDb);
+            break; // Emit updated result once
+          }
+
+        } catch (e) {
+          yield Resource.failed(
+            error: e is Exception ? e : Exception(e.toString()),
+            data: currentDbData,
+          );
+        }
+      }
+
+    } catch (e) {
+      yield Resource.failed(
+        error: e is Exception ? e : Exception(e.toString()),
+        data: null,
+      );
+    }
   }
 }

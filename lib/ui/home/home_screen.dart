@@ -1,6 +1,6 @@
 import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
-import 'package:butterfly/ui/home/bottomnav/BottomNavCubit.dart';
+import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
 import 'package:butterfly/ui/widgets/app_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

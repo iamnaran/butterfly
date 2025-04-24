@@ -1,15 +1,15 @@
+import 'package:butterfly/core/database/entity/explore/product_entity.dart';
 import 'package:butterfly/core/database/entity/user/user_entity.dart';
 import 'package:butterfly/core/database/hive_constants.dart';
+import 'package:butterfly/utils/app_logger.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton()
 class HiveDbManager {
-
   final Map<String, Box> _openBoxes = {};
 
-  // Open a box dynamically based on its name
-  Future<Box<T>> _openBox<T>(String boxName) async {
+  Future<Box<T>> _ensureOpenBox<T>(String boxName) async {
     if (_openBoxes.containsKey(boxName)) {
       return _openBoxes[boxName] as Box<T>;
     }
@@ -18,45 +18,63 @@ class HiveDbManager {
     return box;
   }
 
-  // Generic method to delete an item
-
-  Future<void> saveItem<T>(String boxName, String key, T item) async {
-    final box = await _openBox<T>(boxName);
-    await box.put(key, item);
-  }
-
-  Future<T?> getItem<T>(String boxName, String key) async {
-    final box = await _openBox<T>(boxName);
-    return box.get(key);
-  }
-
-  Future<void> clearItem<T>(String boxName, String key) async {
-    final box = await _openBox<T>(boxName);
-    await box.delete(key);
-  }
-
-  Future<bool> itemExists<T>(String boxName, String key) async {
-    final box = await _openBox<T>(boxName);
-    return box.containsKey(key);
-  }
-
   // User Box
+  Future<Box<UserEntity>> _getUserBox() async {
+    return await _ensureOpenBox<UserEntity>(HiveConstants.userBox);
+  }
+
   Future<void> saveLoggedInUser(UserEntity user) async {
-    await saveItem<UserEntity>(HiveConstants.userBox, HiveConstants.keyLoggedInUser, user);
+    final box = await _getUserBox();
+    await box.put(HiveConstants.keyLoggedInUser, user);
   }
 
   Future<UserEntity?> getLoggedInUser() async {
-    return await getItem<UserEntity>(HiveConstants.userBox, HiveConstants.keyLoggedInUser);
+    final box = await _getUserBox();
+    return box.get(HiveConstants.keyLoggedInUser);
   }
 
   Future<void> clearLoggedInUser() async {
-    await clearItem<UserEntity>(HiveConstants.userBox, HiveConstants.keyLoggedInUser);
+    final box = await _getUserBox();
+    await box.delete(HiveConstants.keyLoggedInUser);
   }
 
-   Future<bool> getUserLoggedInStatus() async {
+  Future<bool> getUserLoggedInStatus() async {
     final user = await getLoggedInUser();
     return user != null;
   }
 
+  // Product List Box
+  Future<Box<List<ProductEntity>>> _getProductListBox() async {
+    return await _ensureOpenBox<List<ProductEntity>>(HiveConstants.productBox);
+  }
+
+  Future<void> saveProductList(List<ProductEntity> products) async {
+    if (products.isEmpty) {
+      AppLogger.showError("Product list is empty, not saving to Hive");
+      return;
+    }
+    final box = await _getProductListBox();
+    if(box.isEmpty){
+      AppLogger.showError("Save Product Box is Empty");
+    }
+    AppLogger.showError("Save Product Box has value");
+    await box.put(HiveConstants.keyProductList, products);
+    AppLogger.showError("Product list saved to Hive: ${box.get(HiveConstants.keyProductList)}");
+
+  }
+
+ Future<List<ProductEntity>?> getProductList() async {
+    final box = await _getProductListBox();
+    if(box.isEmpty){
+      AppLogger.showError("Get Product Box is Empty");
+    }
+    AppLogger.showError("Get Product Box has value");
+    return box.get(HiveConstants.keyProductList);
+  }
+
+  Future<void> clearProductList() async {
+    final box = await _getProductListBox();
+    await box.delete(HiveConstants.keyProductList);
+  }
 
 }

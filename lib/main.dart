@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await configureDependenciesInjection();
   await initHive();
+  await configureDependenciesInjection();
   final hive = getIt<HiveDbManager>();
   final loggedInStatus = await hive.getUserLoggedInStatus();
   AppLogger.configureLogging();
@@ -23,12 +23,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'Butterfly',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigoAccent),
-        useMaterial3: true,
-      ),
-      routerConfig: AppRouter.getRouter(isLoggedIn));
+        debugShowCheckedModeBanner: false,
+        title: 'Butterfly',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigoAccent),
+          useMaterial3: true,
+        ),
+        routerConfig: AppRouter.getRouter(isLoggedIn));
   }
 }
+
+
+// dart run build_runner build --delete-conflicting-outputs
+
