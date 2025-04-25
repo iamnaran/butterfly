@@ -20,6 +20,7 @@ class AppTextField extends StatelessWidget{
  @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: Theme.of(context).textTheme.bodySmall,
       controller: controller,
       keyboardType: keyboardType,
       decoration: InputDecoration(

@@ -20,6 +20,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: Theme.of(context).textTheme.bodySmall,
       controller: widget.controller,
       obscureText: _obscureText,
       decoration: InputDecoration(

@@ -2,7 +2,8 @@ import 'package:butterfly/core/database/hive_initalizer.dart';
 import 'package:butterfly/core/di/di_module.dart';
 import 'package:butterfly/core/preference/pref_manager.dart';
 import 'package:butterfly/navigation/router.dart';
-import 'package:butterfly/theme/app_theme.dart';
+import 'package:butterfly/theme/theme.dart';
+import 'package:butterfly/theme/typography.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -26,16 +27,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+    MaterialTheme theme = MaterialTheme(appTextStyle);
+
     return MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Butterfly',
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
+        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+        darkTheme: theme.dark(),
         themeMode: ThemeMode.system,
         routerConfig: AppRouter.getRouter(isLoggedIn));
   }
 }
-
 
 // dart run build_runner build --delete-conflicting-outputs
 

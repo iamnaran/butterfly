@@ -1,4 +1,7 @@
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
+import 'package:butterfly/theme/widgets/text/app_large_text.dart';
+import 'package:butterfly/theme/widgets/text/app_medium_text.dart';
+import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +22,7 @@ class ProductListItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 18.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.secondaryContainer,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha((0.1 * 255).toInt()),
@@ -68,32 +71,26 @@ class ProductListItem extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8.0, vertical: 4.0),
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: Text(
-                        product.category,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.black87),
+                      child: AppText(
+                        text: product.category,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   const SizedBox(height: 8.0),
-                  Text(
-                    product.title,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                  AppLargeText(
+                    text: product.title,
+                    fontWeight: FontWeight.bold,
                   ),
                   const SizedBox(height: 4.0),
-                  Text(
-                    'Price: \$${product.price.toStringAsFixed(2)}',
-                    style: const TextStyle(fontSize: 16, color: Colors.green),
-                  ),
                   if (product.description.isNotEmpty)
-                    Text(
-                      product.description,
+                    AppMediumText(
+                      text: product.description,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                 ],
               ),

@@ -1,9 +1,10 @@
 import 'package:butterfly/navigation/routes.dart';
+import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:butterfly/ui/auth/bloc/login_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:butterfly/ui/widgets/app_password_field.dart';
-import 'package:butterfly/ui/widgets/app_primary_button.dart';
-import 'package:butterfly/ui/widgets/app_text_field.dart';
+import 'package:butterfly/theme/widgets/fields/app_password_field.dart';
+import 'package:butterfly/theme/widgets/buttons/app_primary_button.dart';
+import 'package:butterfly/theme/widgets/fields/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,12 +45,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      
-                      const Text(
-                        'Welcome Back 👋',
-                        style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.bold),
+                    children: [   
+                      AppText(
+                        text: 'Welcome Back 👋',
+                        style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ),
                       

@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 
-TextTheme customTextTheme = TextTheme(
+TextTheme appTextStyle = TextTheme(
   displayLarge: TextStyle(
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w700,
-    fontSize: 57.0,
+    fontSize: 16.0,
     letterSpacing: -0.25,
   ),
   displayMedium: TextStyle(
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w700,
-    fontSize: 45.0,
+    fontSize: 12.0,
     letterSpacing: -0.1,
   ),
   displaySmall: TextStyle(
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w700,
     fontSize: 36.0,
-    letterSpacing: 0.0,
+    letterSpacing: 8.0,
   ),
   headlineLarge: TextStyle(
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w700,
-    fontSize: 32.0,
+    fontSize: 18.0,
     letterSpacing: 0.0,
   ),
   headlineMedium: TextStyle(

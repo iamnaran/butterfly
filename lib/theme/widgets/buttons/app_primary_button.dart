@@ -19,9 +19,7 @@ Widget build(BuildContext context) {
 
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.blue, 
-      foregroundColor: Colors.white,
-      disabledBackgroundColor: Colors.grey.shade300, 
-      disabledForegroundColor: Colors.grey,        
+      foregroundColor: Colors.white,    
     ),
 
     child: isLoading
