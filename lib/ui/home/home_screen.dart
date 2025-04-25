@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.child});
+  final StatefulNavigationShell navigationShell;
 
-  final Widget child;
+  const HomeScreen({super.key, required this.navigationShell});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,14 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateSelectedIndex(context);
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant HomeScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateSelectedIndex(context);
     });
@@ -70,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         appBar: _buildAppBar(context),
-        body: widget.child,
+        body: widget.navigationShell,
         bottomNavigationBar: BlocBuilder<BottomNavCubit, int>(
           builder: (context, selectedIndex) {
             return BottomNavigationBar(

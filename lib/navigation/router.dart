@@ -11,85 +11,101 @@ import 'package:butterfly/ui/home/bottombar/profile/profile_screen.dart';
 import 'package:butterfly/ui/home/bottombar/search/search_screen.dart';
 import 'package:butterfly/ui/home/home_screen.dart';
 import 'package:butterfly/utils/app_transition.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
   static GoRouter getRouter(bool isLoggedIn) {
     return GoRouter(
+      navigatorKey: _rootNavigatorKey,
       initialLocation: isLoggedIn ? Routes.explorePath : Routes.loginPath,
       routes: [
+        /// Login Page
         GoRoute(
           path: Routes.loginPath,
           name: Routes.loginRouteName,
           builder: (context, state) => BlocProvider(
-            create: (context) => getIt<LoginBloc>(),
+            create: (_) => getIt<LoginBloc>(),
             child: const LoginScreen(),
           ),
         ),
 
-        ShellRoute(builder: (context, state, child) {
+        /// Bottom Navigation 
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) {
             return MultiBlocProvider(
-                providers: [
-                  BlocProvider(create: (_) => getIt<HomeBloc>()),
-                  BlocProvider(create: (_) => getIt<BottomNavCubit>()),
-                ],
-                child: HomeScreen(child: child),
-              );
-        },
-          routes: [
-            GoRoute(
-              path: Routes.explorePath,
-              name: Routes.exploreRouteName,
-              pageBuilder: (context, state) => AppTransitions.fade(
-                  context: context,
-                  state: state,
-                  child: BlocProvider(
-                        create: (context) => getIt<ExploreBloc>(),
-                        child: const ExploreScreen(),
-                      ),
-                ),
-                routes: [
-                  // Product Detail Page
-                  GoRoute(
-                    path: r'product/:productId',
-                    name: Routes.productDetailRouteName,
-                    builder: (context, state) {
-                      final productId = int.parse(state.pathParameters['productId']!);
-                      return ProductDetailScreen(productId: productId);
-                    },
+              providers: [
+                BlocProvider(create: (_) => getIt<HomeBloc>()),
+                BlocProvider(create: (_) => getIt<BottomNavCubit>()),
+              ],
+              child: HomeScreen(navigationShell: navigationShell),
+            );
+          },
+          branches: [
+
+            /// Explore Branch
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.explorePath,
+                  name: Routes.exploreRouteName,
+                  pageBuilder: (context, state) => AppTransitions.fade(
+                    context: context,
+                    state: state,
+                    child: BlocProvider(
+                      create: (_) => getIt<ExploreBloc>(),
+                      child: const ExploreScreen(),
+                    ),
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: 'product/:productId',
+                      name: Routes.productDetailRouteName,
+                      builder: (context, state) {
+                        final productId = int.parse(state.pathParameters['productId']!);
+                        return ProductDetailScreen(productId: productId);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
 
-            GoRoute(
-              path: Routes.profilePath,
-              name: Routes.profileRouteName,
-              pageBuilder: (context, state) => AppTransitions.fade(
-                context: context,
-                state: state,
-                child: const ProfileScreen(),
-              ),
+            /// Search Branch
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.searchPath,
+                  name: Routes.searchRouteName,
+                  pageBuilder: (context, state) => AppTransitions.fade(
+                    context: context,
+                    state: state,
+                    child: const SearchScreen(),
+                  ),
+                ),
+              ],
             ),
 
-            GoRoute(
-              path: Routes.searchPath,
-              name: Routes.searchRouteName,
-              pageBuilder: (context, state) => AppTransitions.fade(
-                context: context,
-                state: state,
-                child: const SearchScreen(),
-              ),
+            /// Profile Branch
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: Routes.profilePath,
+                  name: Routes.profileRouteName,
+                  pageBuilder: (context, state) => AppTransitions.fade(
+                    context: context,
+                    state: state,
+                    child: const ProfileScreen(),
+                  ),
+                ),
+              ],
             ),
-          ]
-      ),
-
-        
+          ],
+        ),
       ],
     );
   }
-
-
-
-
 }
