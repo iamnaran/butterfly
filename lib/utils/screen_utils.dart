@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class UIHelpers {
-  UIHelpers._internal();
+class ScreenUtils {
+  ScreenUtils._internal();
 
   static Widget verticalSpace(double height) => SizedBox(height: height);
 

@@ -1,3 +1,4 @@
+import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -8,7 +9,7 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Product Detail')),
+      appBar: AppBar(title: const AppText(text:'Product Detail')),
       body: Center(
         child: Text('Product ID: $productId'),
       ),

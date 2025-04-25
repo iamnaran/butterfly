@@ -12,14 +12,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileBloc>().add(const LoadProfileEvent());
     });
-
   }
 
   @override
@@ -46,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             } else if (state is ProfileError) {
               return Center(child: Text('Error: ${state.message}'));
             } else {
-              return const Center(child: Text('Unknown State'));
+              return const Center(child: Text('User logging out...'));
             }
           },
         ),

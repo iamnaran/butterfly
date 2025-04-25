@@ -1,6 +1,4 @@
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
-import 'package:butterfly/theme/widgets/text/app_large_text.dart';
-import 'package:butterfly/theme/widgets/text/app_medium_text.dart';
 import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -71,25 +69,27 @@ class ProductListItem extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8.0, vertical: 4.0),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: AppText(
                         text: product.category,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                     ),
                   const SizedBox(height: 8.0),
-                  AppLargeText(
+                  AppText(
                     text: product.title,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 4.0),
+                  const SizedBox(height: 8.0),
                   if (product.description.isNotEmpty)
-                    AppMediumText(
+                    AppText(
                       text: product.description,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      maxLines: 3,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                 ],

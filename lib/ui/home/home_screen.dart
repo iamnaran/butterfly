@@ -51,7 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
-        body: widget.navigationShell,
+        body: SafeArea( 
+          child: widget.navigationShell,
+        ),
         bottomNavigationBar: BlocBuilder<BottomNavCubit, int>(
           builder: (context, selectedIndex) {
             return BottomNavBar(
