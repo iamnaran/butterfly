@@ -16,6 +16,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _exploreNavigatorKey = GlobalKey<NavigatorState>();
+final _profileNavigatorKey = GlobalKey<NavigatorState>();
+final _searchNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
   static GoRouter getRouter(bool isLoggedIn) {
@@ -45,12 +48,13 @@ class AppRouter {
             );
           },
           branches: [
-
             /// Explore Branch
             StatefulShellBranch(
+              navigatorKey: _exploreNavigatorKey,
               routes: [
                 GoRoute(
                   path: Routes.explorePath,
+                  
                   name: Routes.exploreRouteName,
                   pageBuilder: (context, state) => AppTransitions.fade(
                     context: context,
@@ -76,6 +80,7 @@ class AppRouter {
 
             /// Search Branch
             StatefulShellBranch(
+              navigatorKey: _searchNavigatorKey,
               routes: [
                 GoRoute(
                   path: Routes.searchPath,
@@ -91,6 +96,7 @@ class AppRouter {
 
             /// Profile Branch
             StatefulShellBranch(
+              navigatorKey: _profileNavigatorKey,
               routes: [
                 GoRoute(
                   path: Routes.profilePath,
