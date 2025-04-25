@@ -16,7 +16,7 @@ class ProductListItem extends StatelessWidget {
         onProductTap?.call(product.id.toString());
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 18.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           color: Colors.white,

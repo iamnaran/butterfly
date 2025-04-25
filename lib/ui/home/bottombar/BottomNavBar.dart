@@ -13,30 +13,25 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLogger.showError('BottomNavBar: selectedIndex = $selectedIndex');
 
-    AppLogger.showError(
-      'BottomNavBar: selectedIndex = $selectedIndex'
-    );
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
+    return NavigationBar(
+      selectedIndex: selectedIndex,
+      onDestinationSelected: onItemTapped,
+      destinations: const <NavigationDestination>[
+        NavigationDestination(
           icon: Icon(Icons.explore),
           label: 'Explore',
         ),
-        BottomNavigationBarItem(
+        NavigationDestination(
           icon: Icon(Icons.person),
           label: 'Profile',
         ),
-        BottomNavigationBarItem(
+        NavigationDestination(
           icon: Icon(Icons.search),
           label: 'Search',
         ),
       ],
-      currentIndex: selectedIndex,
-      selectedItemColor: Colors.blue,
-      selectedFontSize: 12.0,
-      unselectedFontSize: 12.0,
-      onTap: onItemTapped, 
     );
   }
 }
