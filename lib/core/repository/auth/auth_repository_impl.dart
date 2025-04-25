@@ -68,13 +68,13 @@ final PreferenceManager _preferenceManager;
   }
   
   @override
-  Future<UserEntity?> getLoggedInUser(int id) {
+  Future<UserEntity?> getLoggedInUser() {
     
-    return _userDatabaseManager.getUser(id).then((user) {
+    return _userDatabaseManager.getFirstAndOnlyUser().then((user) {
       if (user != null) {
         AppLogger.showError("User found: ${user.username}");
       } else {
-        AppLogger.showError("No user found with ID: $id");
+        AppLogger.showError("No user found with ID:");
       }
       return user;
     }).catchError((error) {

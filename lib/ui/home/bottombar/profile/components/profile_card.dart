@@ -10,32 +10,38 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4.0,
-      margin: const EdgeInsets.all(16.0),
+    return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(user.image),
+        padding: const EdgeInsets.all(24.0), // Added more padding around the card
+        child: Card(
+          elevation: 4.0,
+          margin: EdgeInsets.zero, // Removed default margin as we are using Padding
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Wrap content size
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(user.image),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  '${user.firstName} ${user.lastName}',
+                  style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                ),
+                Text(user.email, style: const TextStyle(fontSize: 16.0)),
+                const SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    // Dispatch the logout event when the button is pressed
+                    context.read<ProfileBloc>().add(LogoutEvent());
+                  },
+                  child: const Text('Logout'),
+                ),
+              ],
             ),
-            const SizedBox(height: 16.0),
-            Text(
-              '${user.firstName} ${user.lastName}',
-              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            Text(user.email, style: const TextStyle(fontSize: 16.0)),
-            const SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                // Dispatch the logout event when the button is pressed
-                context.read<ProfileBloc>().add(LogoutEvent());
-              },
-              child: const Text('Logout'),
-            ),
-          ],
+          ),
         ),
       ),
     );

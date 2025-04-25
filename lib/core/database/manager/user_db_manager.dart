@@ -20,6 +20,19 @@ class UserDatabaseManager {
     return userEntity;
   }
 
+   Future<UserEntity?> getFirstAndOnlyUser() async {
+    final box = await _userBox;
+    if (box.length == 1) {
+      return box.values.first;
+    }
+    return null;
+  }
+
+  Future<bool> containsAnyUser() async {
+    final box = await _userBox;
+    return box.isNotEmpty;
+  }
+
 
   Future<void> deleteUser(int id) async {
     final box = await _userBox;

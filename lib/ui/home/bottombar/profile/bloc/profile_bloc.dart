@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:butterfly/core/database/entity/user/user_entity.dart';
 import 'package:butterfly/core/repository/auth/auth_repository.dart';
+import 'package:butterfly/utils/app_logger.dart';
 import 'package:equatable/equatable.dart';
 
 part 'profile_event.dart';
@@ -16,7 +17,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       on<LoadProfileEvent>((event, emit) async {
         try {
           emit(ProfileLoading());
-          final user = await _authRepository.getLoggedInUser(event.userId);
+          final user = await _authRepository.getLoggedInUser();
+          AppLogger.showError('User: $user');
           if (user != null) {
             emit(ProfileLoaded(user: user));
           } else {
@@ -27,10 +29,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         }
       });
 
-
     on<LogoutEvent>((event, emit) async {
       try {
-        
         _authRepository.logout(); 
         emit(ProfileLoggedOut());
       } catch (e) {

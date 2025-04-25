@@ -5,7 +5,7 @@ abstract class IAuthRepository {
   Stream<Resource<UserEntity?>> login(String username, String password);
 
   //get logged in user details
-  Future<UserEntity?> getLoggedInUser(int id);
+  Future<UserEntity?> getLoggedInUser();
 
   void logout();
 }
