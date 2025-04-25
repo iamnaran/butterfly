@@ -1,3 +1,4 @@
+import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -12,6 +13,10 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    AppLogger.showError(
+      'BottomNavBar: selectedIndex = $selectedIndex'
+    );
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(

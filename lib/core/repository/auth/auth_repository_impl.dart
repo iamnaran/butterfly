@@ -66,4 +66,21 @@ final PreferenceManager _preferenceManager;
     _preferenceManager.setLoggedIn(false);
     AppLogger.showError("User logged out");
   }
+  
+  @override
+  Future<UserEntity?> getLoggedInUser(int id) {
+    
+    return _userDatabaseManager.getUser(id).then((user) {
+      if (user != null) {
+        AppLogger.showError("User found: ${user.username}");
+      } else {
+        AppLogger.showError("No user found with ID: $id");
+      }
+      return user;
+    }).catchError((error) {
+      AppLogger.showError("Error fetching user: $error");
+      return null;
+    });
+
+  }
 }

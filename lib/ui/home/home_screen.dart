@@ -2,6 +2,7 @@ import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavBar.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
+import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,48 +26,41 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _updateSelectedIndex(BuildContext context) {
-    final currentRoute =
-        GoRouter.of(context).routeInformationProvider.value.uri.path;
-    final bottomNavCubit = context.read<BottomNavCubit>();
-    if (currentRoute == '/profile') {
-      bottomNavCubit.setIndex(1);
-    } else if (currentRoute == '/search') {
-      bottomNavCubit.setIndex(2);
-    } else {
-      bottomNavCubit.setIndex(0);
-    }
+    context
+        .read<BottomNavCubit>()
+        .setIndex(widget.navigationShell.currentIndex);
   }
 
   void _goBranch(int index) {
     context.read<BottomNavCubit>().setIndex(index);
+    AppLogger.showError(
+      'HomeScreen: _goBranch: index = $index',
+    );
     widget.navigationShell.goBranch(
       index,
       initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
- @override
-Widget build(BuildContext context) {
-  return BlocListener<HomeBloc, HomeState>(
-    listener: (context, state) {
-      if (state is LogoutSuccess) {
-        GoRouter.of(context).goNamed(Routes.loginRouteName);
-      }
-    },
-    child: Scaffold(
-      body: widget.navigationShell,
-      bottomNavigationBar: BlocBuilder<BottomNavCubit, int>(
-        builder: (context, selectedIndex) {
-          
-          return BottomNavBar(
-            selectedIndex: selectedIndex,
-            onItemTapped: _goBranch,
-          );
-
-        },
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (context, state) {
+        if (state is LogoutSuccess) {
+          GoRouter.of(context).goNamed(Routes.loginRouteName);
+        }
+      },
+      child: Scaffold(
+        body: widget.navigationShell,
+        bottomNavigationBar: BlocBuilder<BottomNavCubit, int>(
+          builder: (context, selectedIndex) {
+            return BottomNavBar(
+              selectedIndex: selectedIndex,
+              onItemTapped: _goBranch,
+            );
+          },
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

@@ -11,6 +11,7 @@ import 'package:butterfly/ui/auth/bloc/login_bloc.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
+import 'package:butterfly/ui/home/bottombar/profile/bloc/profile_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,6 +57,10 @@ Future<void> configureDependenciesInjection() async {
 
   getIt.registerFactory<ExploreBloc>(
     () => ExploreBloc(getIt.get<IExploreRepository>()),
+  );
+
+  getIt.registerFactory<ProfileBloc>(
+    () => ProfileBloc(getIt.get<IAuthRepository>()),
   );
 
   getIt.registerFactory<BottomNavCubit>(

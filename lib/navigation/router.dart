@@ -7,6 +7,7 @@ import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/explore/details/product_detail_screen.dart';
 import 'package:butterfly/ui/home/bottombar/explore/explore_screen.dart';
+import 'package:butterfly/ui/home/bottombar/profile/bloc/profile_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/profile/profile_screen.dart';
 import 'package:butterfly/ui/home/bottombar/search/search_screen.dart';
 import 'package:butterfly/ui/home/home_screen.dart';
@@ -59,40 +60,29 @@ class AppRouter {
                   pageBuilder: (context, state) => AppTransitions.fade(
                     context: context,
                     state: state,
+
                     child: BlocProvider(
                       create: (_) => getIt<ExploreBloc>(),
                       child: const ExploreScreen(),
                     ),
+
                   ),
                   routes: [
                     GoRoute(
                       path: 'product/:productId',
                       name: Routes.productDetailRouteName,
+
                       builder: (context, state) {
                         final productId = int.parse(state.pathParameters['productId']!);
                         return ProductDetailScreen(productId: productId);
                       },
+
                     ),
                   ],
                 ),
               ],
             ),
 
-            /// Search Branch
-            StatefulShellBranch(
-              navigatorKey: _searchNavigatorKey,
-              routes: [
-                GoRoute(
-                  path: Routes.searchPath,
-                  name: Routes.searchRouteName,
-                  pageBuilder: (context, state) => AppTransitions.fade(
-                    context: context,
-                    state: state,
-                    child: const SearchScreen(),
-                  ),
-                ),
-              ],
-            ),
 
             /// Profile Branch
             StatefulShellBranch(
@@ -101,11 +91,34 @@ class AppRouter {
                 GoRoute(
                   path: Routes.profilePath,
                   name: Routes.profileRouteName,
+
                   pageBuilder: (context, state) => AppTransitions.fade(
                     context: context,
                     state: state,
-                    child: const ProfileScreen(),
+                    child: BlocProvider(
+                      create: (context) => getIt<ProfileBloc>(),
+                      child: const ProfileScreen(),
+                    ),
                   ),
+
+                ),
+              ],
+            ),
+
+             /// Search Branch
+            StatefulShellBranch(
+              navigatorKey: _searchNavigatorKey,
+              routes: [
+                GoRoute(
+                  path: Routes.searchPath,
+                  name: Routes.searchRouteName,
+
+                  pageBuilder: (context, state) => AppTransitions.fade(
+                    context: context,
+                    state: state,
+                    child: const SearchScreen(),
+                  ),
+
                 ),
               ],
             ),
