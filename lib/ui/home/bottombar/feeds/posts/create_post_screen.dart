@@ -1,16 +1,20 @@
 import 'package:butterfly/core/database/entity/post/post_entity.dart';
-import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
+import 'package:butterfly/utils/app_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({super.key});
+
+  final Function(PostEntity postEntity) onCreatePost;
+
+  const CreatePostScreen({super.key, required this.onCreatePost});
 
   @override
   State<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
+
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
@@ -27,23 +31,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
     if (title.isNotEmpty && content.isNotEmpty) {
       final post = PostEntity(
-        id: DateTime.now().millisecondsSinceEpoch,
+        id: AppUtils.getRandomInt(),
         title: title,
         body: content,
-        tags: [],
+        tags: ['bloc','flutter','auto updated local'],
         reactions: ReactionHiveModel(likes: 0, dislikes: 0),
         views: 0,
         userId: 1,
       );
-
-      context.read<PostBloc>().add(
-            CreatePost(
-              post: post,
-              onPostCreated: (_) {
-                Navigator.of(context).pop(); // just dismiss
-              },
-            ),
-          );
+      widget.onCreatePost(post);
     }
   }
 

@@ -16,10 +16,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }
 
   Future<void> _onFetchPosts(FetchPosts event, Emitter<PostState> emit) async {
-    emit(PostLoading());
+    
+    if (state is PostLoading){
+      emit(PostLoading());
+    } 
 
     await emit.forEach(
-      _postRepository.getAllProducts(),
+      _postRepository.getAllPosts(),
       onData: (resource) {
         if (resource.isSuccess) {
           return PostLoaded(resource.data ?? []);

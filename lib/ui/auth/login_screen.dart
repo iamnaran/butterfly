@@ -19,6 +19,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
 
+  void _requestLogin() {
+    _emailCtrl.text = 'emilys';
+    _passwordCtrl.text = 'emilyspass';
+    final email = _emailCtrl.text.trim();
+    final password = _passwordCtrl.text.trim();
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      context
+          .read<LoginBloc>()
+          .add(LoginRequested(username: email, password: password));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill any username and password")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Login Successful")),
                     );
-                   GoRouter.of(context).goNamed(Routes.exploreRouteName);
+                    GoRouter.of(context).goNamed(Routes.exploreRouteName);
                   }
                 },
                 builder: (context, state) {
@@ -45,15 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [   
+                    children: [
                       AppText(
                         text: 'Welcome Back 👋',
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ),
-                      
                       const SizedBox(height: 32),
-
                       AppTextField(
                         label: 'Email',
                         icon: Icons.email,
@@ -63,31 +78,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? 'Enter email'
                             : null,
                       ),
-
                       const SizedBox(height: 16),
-
                       PasswordTextField(
                         controller: _passwordCtrl,
                         validator: (value) => value == null || value.length < 6
                             ? 'Minimum 6 chars'
                             : null,
                       ),
-                      
                       const SizedBox(height: 24),
-
                       PrimaryButton(
                         label: 'Login',
                         isLoading: isLoading,
                         onPressed: () {
-                          final email = 'emilys';
-                          final password = 'emilyspass';
-                          context.read<LoginBloc>().add(
-                              LoginRequested(username: email, password: password));
+                          _requestLogin();
                         },
                       ),
-
                       const SizedBox(height: 24),
-                      
                       TextButton(
                         onPressed: () {},
                         child: const Text("Forgot password?"),

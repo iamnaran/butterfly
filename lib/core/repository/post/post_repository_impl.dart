@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:butterfly/core/database/entity/post/post_entity.dart';
 import 'package:butterfly/core/database/manager/post_db_manager.dart';
 import 'package:butterfly/core/model/feeds/post_mapper.dart';
 import 'package:butterfly/core/model/feeds/post_response.dart';
+
 import 'package:butterfly/core/network/base/endpoints.dart';
 import 'package:butterfly/core/network/base/resource.dart';
 import 'package:butterfly/core/network/services/api_services.dart';
@@ -13,47 +14,62 @@ import 'package:butterfly/utils/app_logger.dart';
 class PostRepositoryImpl extends IPostRepository {
   final IApiServices networkapiservice;
   final PostDatabaseManager _postDatabaseManager;
+  final StreamController<Resource<List<PostEntity>>> _postsController =
+      StreamController.broadcast();
+  bool _initialized = false;
 
   PostRepositoryImpl(this.networkapiservice, this._postDatabaseManager);
 
   @override
-  Stream<Resource<List<PostEntity>>> getAllProducts() async* {
+  Stream<Resource<List<PostEntity>>> getAllPosts() {
+    if (!_initialized) {
+      _init();
+      _initialized = true;
+    }
+    return _postsController.stream;
+  }
+
+  void _init() async {
     final String url = Endpoints.getPosts();
     AppLogger.showError("Post List URL: $url");
 
-    // 1. Load data from DB asynchronously if available
-    yield Resource.loading(); // Emit loading state
+    _postsController.add(Resource.loading());
+
+    // 1. Emit initial data from DB
     final initialData = await _postDatabaseManager.getAllPosts();
-    yield Resource.success(data: initialData); // Emit initial DB data
-    // print inital data
-    // AppLogger.showError("Initial data from Hive: $initialData");
+    _postsController.add(Resource.success(data: initialData));
+
+    // 2. Watch for DB changes
+    _postDatabaseManager.watchPosts().listen((event) async {
+      final updatedPosts = await _postDatabaseManager.getAllPosts();
+      _postsController.add(Resource.success(data: updatedPosts));
+    });
 
     try {
       final response = await networkapiservice.getGetApiResponse(url);
       if (response == null) {
-        yield Resource.failed(error: Exception("No data received from API"));
+        _postsController.add(
+            Resource.failed(error: Exception("No data received from API")));
         return;
       }
+
       final Map<String, dynamic> jsonMap = jsonDecode(response);
       final postApiResponse = PostResponse.fromJson(jsonMap);
       final List<PostEntity> fetchedPosts =
           PostMapper.fromApiResponse(postApiResponse);
-      _saveApiResult(fetchedPosts);
+      _postsController.add(Resource.success(data: fetchedPosts));
 
-      yield Resource.success(data: fetchedPosts);
+      await _saveApiResult(fetchedPosts); // Save fetched posts to Hive
     } catch (e) {
       AppLogger.showError("Post List API Error: $e");
-      yield Resource.failed(
-          error: e is Exception ? e : Exception(e.toString()));
+      _postsController.add(
+          Resource.failed(error: e is Exception ? e : Exception(e.toString())));
     }
   }
 
   @override
   Future<Resource<PostEntity>> createPost(PostEntity createdPost) async {
     try {
-      // Create a new PostEntity with default/mock values
-
-      // Save the new post into Hive
       await _postDatabaseManager.savePost(createdPost);
 
       AppLogger.showError(

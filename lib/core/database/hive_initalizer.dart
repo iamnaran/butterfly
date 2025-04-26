@@ -12,3 +12,9 @@ Future<void> initHive() async {
   Hive.registerAdapter(PostEntityAdapter());
   Hive.registerAdapter(ReactionHiveModelAdapter());
 }
+
+// delete hive
+Future<void> deleteHiveDisk() async {
+  await Hive.deleteFromDisk();
+  await Hive.close();
+}

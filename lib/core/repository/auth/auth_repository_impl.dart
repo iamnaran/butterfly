@@ -12,17 +12,17 @@ import 'package:butterfly/core/preference/pref_manager.dart';
 import 'package:butterfly/core/repository/auth/auth_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
 
-class AuthRepositoryImpl extends IAuthRepository{
+class AuthRepositoryImpl extends IAuthRepository {
+  final IApiServices networkapiservice;
+  final UserDatabaseManager _userDatabaseManager;
+  final PreferenceManager _preferenceManager;
 
-final IApiServices networkapiservice;
-final UserDatabaseManager _userDatabaseManager;
-final PreferenceManager _preferenceManager;
+  AuthRepositoryImpl(this.networkapiservice, this._userDatabaseManager,
+      this._preferenceManager);
 
-  AuthRepositoryImpl(this.networkapiservice, this._userDatabaseManager, this._preferenceManager);
-
-   @override
-    Stream<Resource<UserEntity?>> login(String username, String password) {
-    final String url = Endpoints.login(); 
+  @override
+  Stream<Resource<UserEntity?>> login(String username, String password) {
+    final String url = Endpoints.login();
     final data = {
       'username': username,
       'password': password,
@@ -36,7 +36,8 @@ final PreferenceManager _preferenceManager;
 
         try {
           // Fetch the user data from the API
-          final response = await networkapiservice.getPostApiResponse(url, data);
+          final response =
+              await networkapiservice.getPostApiResponse(url, data);
           AppLogger.showError(response.toString());
           final Map<String, dynamic> jsonMap = jsonDecode(response);
           final userResponse = UserResponse.fromJson(jsonMap);
@@ -59,17 +60,16 @@ final PreferenceManager _preferenceManager;
     // Return the stream of the login process (API call and result saving)
     return networkRequest.asStream(null); // Passing `null` as no local data
   }
-  
+
   @override
   void logout() {
     _userDatabaseManager.deleteAllUsers();
     _preferenceManager.setLoggedIn(false);
     AppLogger.showError("User logged out");
   }
-  
+
   @override
   Future<UserEntity?> getLoggedInUser() {
-    
     return _userDatabaseManager.getFirstAndOnlyUser().then((user) {
       if (user != null) {
         AppLogger.showError("User found: ${user.username}");
@@ -81,6 +81,5 @@ final PreferenceManager _preferenceManager;
       AppLogger.showError("Error fetching user: $error");
       return null;
     });
-
   }
 }

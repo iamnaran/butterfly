@@ -6,6 +6,11 @@ class PostDatabaseManager {
 
   Future<Box<PostEntity>> get _postBox async => await Hive.openBox<PostEntity>(_postBoxName);
 
+  Stream<BoxEvent> watchPosts() async* {
+    final box = await _postBox;
+    yield* box.watch();
+  }
+
   Future<void> savePost(PostEntity post) async {
     final box = await _postBox;
     await box.put(post.id, post); 

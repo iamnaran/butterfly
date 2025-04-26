@@ -1,7 +1,9 @@
 import 'package:butterfly/core/database/entity/post/post_entity.dart';
+import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
+import 'package:butterfly/ui/home/bottombar/feeds/posts/create_post_screen.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/posts/post_item.dart';
-import 'package:butterfly/utils/app_utils.dart';
+import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,23 +15,49 @@ class NewFeedsScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<NewFeedsScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     context.read<PostBloc>().add(FetchPosts());
   }
 
-  // void _showCreatePostBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     builder: (context) {
-  //       return CreatePostScreen();
-  //     },
-  //   ).then((_) {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
-  //   });
-  // }
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+  }
+
+  void _handleCreatePost(PostEntity post) {
+    context.read<PostBloc>().add(
+          CreatePost(
+            post: post,
+            onPostCreated: (_) {
+              AppLogger.showError("Created post via callback: $post");
+              Navigator.of(context).pop();
+              _scrollToTop();
+            },
+          ),
+        );
+  }
+
+  void _showCreatePostBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return CreatePostScreen(
+            onCreatePost: _handleCreatePost); // Pass the callback
+      },
+    ).then((_) {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +75,7 @@ class _PostScreenState extends State<NewFeedsScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Your post has been created!")),
             );
+            _scrollToTop();
           } else if (state is PostCreatingError) {
             // Show error message if any
             ScaffoldMessenger.of(context).showSnackBar(
@@ -56,56 +85,47 @@ class _PostScreenState extends State<NewFeedsScreen> {
         },
         child: BlocBuilder<PostBloc, PostState>(
           buildWhen: (previous, current) {
-          return current is PostLoading || 
-                current is PostLoaded || 
+            return current is PostLoading ||
+                current is PostLoaded ||
+                current is PostInitial ||
                 current is PostError;
-           },
+          },
           builder: (context, state) {
             if (state is PostLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is PostLoaded) {
               final posts = state.posts;
+
               return ListView.builder(
+                controller: _scrollController,
                 padding: const EdgeInsets.all(8),
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
                   final post = posts[index];
-                  return PostCard(
-                    key: ValueKey(post.id),
-                    post: post);
+                  return PostCard(key: ValueKey(post.id), post: post);
                 },
               );
-            } else if (state is PostCreating) {
-              // Optionally show some UI for creating
-              return const Center(child: CircularProgressIndicator());
+            } else if (state is PostInitial) {
+              return const Center(
+                child: AppText(text: "Loading.. Please wait"),
+              );
+            } else if (state is PostError) {
+              return Center(
+                child: AppText(
+                  text: 'Error: ${state.message}',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              );
             } else {
-              return const SizedBox(); // Empty state if no data
+              return const SizedBox(
+                child: AppText(text: "Error"),
+              );
             }
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final newPost = PostEntity(
-            id: AppUtils.getRandomInt(),
-            title: 'New Post',
-            body: 'This is a new post body.',
-            tags: ['flutter', 'bloc'],
-            reactions: ReactionHiveModel(likes: 0, dislikes: 0),
-            views: 0,
-            userId: 1,
-          );
-          context.read<PostBloc>().add(CreatePost(
-                post: newPost,
-                onPostCreated: (PostEntity createdPost) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            "Post '${createdPost.title}' created successfully!")),
-                  );
-                },
-              ));
-        },
+        onPressed: () => _showCreatePostBottomSheet(context),
         child: const Icon(Icons.add),
       ),
     );
