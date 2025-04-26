@@ -1,5 +1,6 @@
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
 import 'package:butterfly/navigation/routes.dart';
+import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/explore/components/product_item.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +15,12 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-
   void _navigateToProductDetail(BuildContext context, String productId) {
     context.pushNamed(
       Routes.productDetailRouteName,
       pathParameters: {'productId': productId},
     );
   }
-
 
   @override
   void initState() {
@@ -31,18 +30,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ExploreBloc, ExploreState>(
-      builder: (context, state) {
-        if (state is ProductListLoading) {
-          return _buildLoading(state.previousProducts);
-        } else if (state is ProductListLoaded) {
-          return _buildProductList(state.products);
-        } else if (state is ProductListError) {
-          return Center(child: Text(state.message));
-        } else {
-          return const Center(child: Text('Unknown state'));
-        }
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: const AppText(text: 'Explore'),
+      ),
+      body: BlocBuilder<ExploreBloc, ExploreState>(
+        builder: (context, state) {
+          if (state is ProductListLoading) {
+            return _buildLoading(state.previousProducts);
+          } else if (state is ProductListLoaded) {
+            return _buildProductList(state.products);
+          } else if (state is ProductListError) {
+            return Center(child: Text(state.message));
+          } else {
+            return const Center(child: Text('Unknown state'));
+          }
+        },
+      ),
     );
   }
 
@@ -67,12 +71,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
         return ProductListItem(
           key: ValueKey(product.id),
           product: product,
-          onProductTap: (productId) => _navigateToProductDetail(context, productId),
+          onProductTap: (productId) =>
+              _navigateToProductDetail(context, productId),
         );
       },
       cacheExtent: 1000.0,
     );
   }
-
-  
 }

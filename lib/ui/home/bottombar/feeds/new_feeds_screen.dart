@@ -29,6 +29,7 @@ class _PostScreenState extends State<NewFeedsScreen> {
     super.dispose();
   }
 
+  // ignore: unused_element
   void _scrollToTop() {
     if (_scrollController.hasClients) {
       _scrollController.jumpTo(0);
@@ -42,7 +43,6 @@ class _PostScreenState extends State<NewFeedsScreen> {
             onPostCreated: (_) {
               AppLogger.showError("Created post via callback: $post");
               Navigator.of(context).pop();
-              _scrollToTop();
             },
           ),
         );
@@ -62,7 +62,7 @@ class _PostScreenState extends State<NewFeedsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Posts')),
+      appBar: AppBar(title: const AppText(text: 'Posts')),
       body: BlocListener<PostBloc, PostState>(
         listener: (context, state) {
           if (state is PostCreating) {
@@ -75,7 +75,7 @@ class _PostScreenState extends State<NewFeedsScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Your post has been created!")),
             );
-            _scrollToTop();
+            
           } else if (state is PostCreatingError) {
             // Show error message if any
             ScaffoldMessenger.of(context).showSnackBar(
@@ -102,7 +102,7 @@ class _PostScreenState extends State<NewFeedsScreen> {
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
                   final post = posts[index];
-                  return PostCard(key: ValueKey(post.id), post: post);
+                  return PostCard(post: post);
                 },
               );
             } else if (state is PostInitial) {

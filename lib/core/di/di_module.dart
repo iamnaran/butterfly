@@ -14,6 +14,7 @@ import 'package:butterfly/ui/auth/bloc/login_bloc.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
+import 'package:butterfly/ui/home/bottombar/explore/details/bloc/product_detail_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/profile/bloc/profile_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -54,6 +55,11 @@ Future<void> configureDependenciesInjection() async {
         getIt.get<IApiServices>(), getIt.get<PostDatabaseManager>()),
   );
 
+  // Bottom Navigation()
+  getIt.registerFactory<BottomNavCubit>(
+    () => BottomNavCubit(),
+  );
+
   // Bloc Injections
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(getIt.get<IAuthRepository>()),
@@ -75,7 +81,7 @@ Future<void> configureDependenciesInjection() async {
     () => PostBloc(getIt.get<IPostRepository>()),
   );
 
-  getIt.registerFactory<BottomNavCubit>(
-    () => BottomNavCubit(),
+  getIt.registerFactory<ProductDetailBloc>(
+    () => ProductDetailBloc(getIt.get<IExploreRepository>()),
   );
 }

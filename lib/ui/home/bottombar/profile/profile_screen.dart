@@ -1,3 +1,4 @@
+import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:butterfly/ui/home/bottombar/profile/bloc/profile_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/profile/components/profile_card.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       },
       child: Scaffold(
+        appBar: AppBar(title: const AppText(text: 'Profile')),
         body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {

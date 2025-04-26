@@ -45,7 +45,6 @@ class PostCard extends StatelessWidget {
                   children: [
                     Icon(Icons.thumb_up, size: 18, color: Colors.green),
                     const SizedBox(width: 4),
-                    Text(post.reactions.likes.toString()),
                     const SizedBox(width: 12),
                     Icon(Icons.visibility, size: 18),
                     const SizedBox(width: 4),

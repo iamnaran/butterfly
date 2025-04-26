@@ -5,6 +5,7 @@ import 'package:butterfly/ui/auth/login_screen.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
+import 'package:butterfly/ui/home/bottombar/explore/details/bloc/product_detail_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/explore/details/product_detail_screen.dart';
 import 'package:butterfly/ui/home/bottombar/explore/explore_screen.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
@@ -72,11 +73,13 @@ class AppRouter {
                     GoRoute(
                       path: 'product/:productId',
                       name: Routes.productDetailRouteName,
-
-                      builder: (context, state) {
+                        builder: (context, state) {
                         final productId = int.parse(state.pathParameters['productId']!);
-                        return ProductDetailScreen(productId: productId);
-                      },
+                        return BlocProvider(
+                          create: (_) => getIt<ProductDetailBloc>(),
+                          child: ProductDetailScreen(productId: productId),
+                        );
+                        },
 
                     ),
                   ],

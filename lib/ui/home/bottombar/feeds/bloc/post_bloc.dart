@@ -17,9 +17,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future<void> _onFetchPosts(FetchPosts event, Emitter<PostState> emit) async {
     
-    if (state is PostLoading){
-      emit(PostLoading());
-    } 
+  emit(PostLoading());
 
     await emit.forEach(
       _postRepository.getAllPosts(),

@@ -35,7 +35,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         title: title,
         body: content,
         tags: ['bloc','flutter','auto updated local'],
-        reactions: ReactionHiveModel(likes: 0, dislikes: 0),
         views: 0,
         userId: 1,
       );

@@ -16,10 +16,6 @@ class PostMapper {
       title: post.title ?? '',
       body: post.body ?? '',
       tags: post.tags ?? [],
-      reactions: ReactionHiveModel(
-        likes: post.reactions?.likes ?? 0,
-        dislikes: post.reactions?.dislikes ?? 0,
-      ),
       views: post.views ?? 0,
       userId: post.userId ?? 0,
     );
@@ -31,10 +27,6 @@ class PostMapper {
       title: entity.title,
       body: entity.body,
       tags: entity.tags,
-      reactions: Reactions(
-        likes: entity.reactions.likes,
-        dislikes: entity.reactions.dislikes,
-      ),
       views: entity.views,
       userId: entity.userId,
     );

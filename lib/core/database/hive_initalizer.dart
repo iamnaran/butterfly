@@ -5,12 +5,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> initHive() async {
   await Hive.initFlutter();
-
+  deleteHiveDisk();
   Hive.registerAdapter(UserEntityAdapter());
   Hive.registerAdapter(ProductEntityAdapter());
 
   Hive.registerAdapter(PostEntityAdapter());
-  Hive.registerAdapter(ReactionHiveModelAdapter());
 }
 
 // delete hive
