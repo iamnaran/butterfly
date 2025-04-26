@@ -37,8 +37,7 @@ class ProductListItem extends StatelessWidget {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12.0)),
               child: CachedNetworkImage(
-                imageUrl:
-                    'https://fastly.picsum.photos/id/919/536/354.jpg?hmac=NQVTG38LLhSmuQu5ztuZ846sqRtDy4nzwI-1C457j-o',
+                imageUrl: product.images!.first,
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,

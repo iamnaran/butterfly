@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'product_response.g.dart';
+
+@JsonSerializable()
 class ProductApiResponse {
   final List<ProductData> products;
   final int total;
@@ -11,18 +16,13 @@ class ProductApiResponse {
     required this.limit,
   });
 
-  factory ProductApiResponse.fromJson(Map<String, dynamic> json) {
-    return ProductApiResponse(
-      products: List<ProductData>.from(
-        json['products'].map((e) => ProductData.fromJson(e)),
-      ),
-      total: json['total'],
-      skip: json['skip'],
-      limit: json['limit'],
-    );
-  }
+  factory ProductApiResponse.fromJson(Map<String, dynamic> json) =>
+      _$ProductApiResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductApiResponseToJson(this);
 }
 
+@JsonSerializable()
 class ProductData {
   final int id;
   final String title;
@@ -32,6 +32,7 @@ class ProductData {
   final double discountPercentage;
   final double rating;
   final int stock;
+  final List<String>? images;
 
   ProductData({
     required this.id,
@@ -42,18 +43,11 @@ class ProductData {
     required this.discountPercentage,
     required this.rating,
     required this.stock,
+    this.images,
   });
 
-  factory ProductData.fromJson(Map<String, dynamic> json) {
-    return ProductData(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'] ?? '',
-      category: json['category'] ?? '',
-      price: json['price']?.toDouble() ?? 0.0,
-      discountPercentage: json['discountPercentage']?.toDouble() ?? 0.0,
-      rating: json['rating']?.toDouble() ?? 0.0,
-      stock: json['stock'] ?? 0,
-    );
-  }
+  factory ProductData.fromJson(Map<String, dynamic> json) =>
+      _$ProductDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductDataToJson(this);
 }

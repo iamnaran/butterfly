@@ -25,13 +25,14 @@ class ProductEntityAdapter extends TypeAdapter<ProductEntity> {
       discountPercentage: fields[5] as double,
       rating: fields[6] as double,
       stock: fields[7] as int,
+      images: (fields[8] as List?)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductEntity obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class ProductEntityAdapter extends TypeAdapter<ProductEntity> {
       ..writeByte(6)
       ..write(obj.rating)
       ..writeByte(7)
-      ..write(obj.stock);
+      ..write(obj.stock)
+      ..writeByte(8)
+      ..write(obj.images);
   }
 
   @override

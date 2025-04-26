@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 
 class UserDatabaseManager {
 
-  static const String _userBoxName = 'users';
+  static const String _userBoxName = 'usersBox';
 
   Future<Box<UserEntity>> get _userBox async =>
       await Hive.openBox<UserEntity>(_userBoxName);

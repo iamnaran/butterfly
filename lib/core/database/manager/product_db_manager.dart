@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 
 class ProductDatabaseManager {
 
-  static const String _productBoxName = 'products';
+  static const String _productBoxName = 'productBox';
 
   Future<Box<ProductEntity>> get _productBox async =>
       await Hive.openBox<ProductEntity>(_productBoxName);

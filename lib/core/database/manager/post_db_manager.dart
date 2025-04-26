@@ -3,6 +3,8 @@ import 'package:hive/hive.dart';
 
 class PostDatabaseManager {
   static const String _postBoxName = 'postsBox';
+
+  // if inserted list in a single key [that will give some casting error]
   static const String _postListBoxName = '_postListBoxName';
 
   static const String _allPostsKey = 'allPosts'; // Define the key for the list

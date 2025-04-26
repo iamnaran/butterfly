@@ -9,16 +9,11 @@ part 'product_detail_event.dart';
 part 'product_detail_state.dart';
 
 class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
-  
   final IExploreRepository _exploreRepository;
-  
+
   ProductDetailBloc(this._exploreRepository) : super(ProductDetailInitial()) {
-    on<ProductDetailEvent>((event, emit) {
-      if (event is FetchProductDetail) {
-        _onFetchProductDetail(event, emit);
-      } 
-      
-    });
+    on<FetchProductDetail>(
+        _onFetchProductDetail); // Directly register the specific event handler
   }
 
   Future<void> _onFetchProductDetail(
@@ -32,19 +27,18 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
       onData: (resource) {
         switch (resource.status) {
           case ApiStatus.initial:
-
-            return ProductDetailInitial(); 
-
+            return ProductDetailInitial();
           case ApiStatus.loading:
             return ProductDetailLoading(
-              (state is ProductDetailLoaded) ? (state as ProductDetailLoaded).product : null,
+              (state is ProductDetailLoaded)
+                  ? (state as ProductDetailLoaded).product
+                  : null,
             );
-
           case ApiStatus.success:
             return ProductDetailLoaded(product: resource.data!);
-
           case ApiStatus.failure:
-            return ProductDetailError(resource.message ?? 'Failed to load product details');
+            return ProductDetailError(
+                resource.message ?? 'Failed to load product details');
         }
       },
       onError: (error, _) {
@@ -52,8 +46,4 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
       },
     );
   }
-
-
-
-  
 }

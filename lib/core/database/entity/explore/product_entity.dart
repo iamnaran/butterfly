@@ -30,6 +30,9 @@ class ProductEntity extends HiveObject {
   @HiveField(7)
   final int stock;
 
+  @HiveField(8)
+  final List<String>? images;
+
 
   ProductEntity({
     required this.id,
@@ -40,6 +43,7 @@ class ProductEntity extends HiveObject {
     required this.discountPercentage,
     required this.rating,
     required this.stock,
+    this.images,
   });
 
   factory ProductEntity.fromApiResponse(ProductData product) {
@@ -52,6 +56,7 @@ class ProductEntity extends HiveObject {
       discountPercentage: product.discountPercentage,
       rating: product.rating,
       stock: product.stock,
+      images: product.images,
     );
   }
 }
