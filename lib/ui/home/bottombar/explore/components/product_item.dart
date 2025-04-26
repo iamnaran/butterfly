@@ -37,25 +37,11 @@ class ProductListItem extends StatelessWidget {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12.0)),
               child: CachedNetworkImage(
+                cacheKey: product.images!.first.toString(),
                 imageUrl: product.images!.first,
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                // Optimization: Consider a simpler placeholder for faster initial paint
-                placeholder: (context, url) => const SizedBox(
-                  height: 200,
-                  width: double.infinity,
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                // Optimization: Ensure error widget is lightweight
-                errorWidget: (context, url, error) => const SizedBox(
-                  height: 200,
-                  width: double.infinity,
-                  child: Center(child: Icon(Icons.error)),
-                ),
-                // Optimization: If known, set maxHeight and maxWidth
-                // maxHeight: 200,
-                // maxWidth: MediaQuery.of(context).size.width,
               ),
             ),
             Padding(
