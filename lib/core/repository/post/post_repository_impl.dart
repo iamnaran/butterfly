@@ -1,0 +1,58 @@
+import 'dart:convert';
+
+import 'package:butterfly/core/database/entity/post/post_entity.dart';
+import 'package:butterfly/core/database/manager/post_db_manager.dart';
+import 'package:butterfly/core/model/feeds/post_mapper.dart';
+import 'package:butterfly/core/model/feeds/post_response.dart';
+import 'package:butterfly/core/network/base/endpoints.dart';
+import 'package:butterfly/core/network/base/resource.dart';
+import 'package:butterfly/core/network/services/api_services.dart';
+import 'package:butterfly/core/repository/post/post_repository.dart';
+import 'package:butterfly/utils/app_logger.dart';
+
+class PostRepositoryImpl extends IPostRepository {
+
+  final IApiServices networkapiservice;
+  final PostDatabaseManager _postDatabaseManager;
+
+  PostRepositoryImpl(this.networkapiservice, this._postDatabaseManager);
+
+  @override
+  Stream<Resource<List<PostEntity>>> getAllProducts() async* {
+    final String url = Endpoints.getPosts(); 
+    AppLogger.showError("Post List URL: $url");
+
+    // 1. Load data from DB asynchronously if available
+    yield Resource.loading(); // Emit loading state
+    final initialData = await _postDatabaseManager.getAllPosts();
+    yield Resource.success(data: initialData); // Emit initial DB data
+    // print inital data
+    // AppLogger.showError("Initial data from Hive: $initialData");
+
+    try {
+      final response = await networkapiservice.getGetApiResponse(url);
+      if (response == null) {
+        yield Resource.failed(error: Exception("No data received from API"));
+        return;
+      }
+      final Map<String, dynamic> jsonMap = jsonDecode(response);
+      final postApiResponse = PostResponse.fromJson(jsonMap); 
+      final List<PostEntity> fetchedPosts =
+          PostMapper.fromApiResponse(postApiResponse); 
+      _saveApiResult(fetchedPosts);
+
+      yield Resource.success(data: fetchedPosts);
+    } catch (e) {
+      AppLogger.showError("Post List API Error: $e");
+      yield Resource.failed(
+          error: e is Exception ? e : Exception(e.toString()));
+    }
+  }
+
+  Future<void> _saveApiResult(List<PostEntity> posts) async {
+    await _postDatabaseManager.savePostList(posts);
+    AppLogger.showError("Post list saved to Hive");
+  }
+  
+
+}

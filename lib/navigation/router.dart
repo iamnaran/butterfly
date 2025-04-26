@@ -7,9 +7,10 @@ import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/explore/details/product_detail_screen.dart';
 import 'package:butterfly/ui/home/bottombar/explore/explore_screen.dart';
+import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
+import 'package:butterfly/ui/home/bottombar/feeds/new_feeds_screen.dart';
 import 'package:butterfly/ui/home/bottombar/profile/bloc/profile_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/profile/profile_screen.dart';
-import 'package:butterfly/ui/home/bottombar/search/search_screen.dart';
 import 'package:butterfly/ui/home/home_screen.dart';
 import 'package:butterfly/utils/app_transition.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ import 'package:go_router/go_router.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _exploreNavigatorKey = GlobalKey<NavigatorState>();
 final _profileNavigatorKey = GlobalKey<NavigatorState>();
-final _searchNavigatorKey = GlobalKey<NavigatorState>();
+final _newsFeedsNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
   static GoRouter getRouter(bool isLoggedIn) {
@@ -105,18 +106,22 @@ class AppRouter {
               ],
             ),
 
-             /// Search Branch
+            /// News Feeds Branch
             StatefulShellBranch(
-              navigatorKey: _searchNavigatorKey,
+              navigatorKey: _newsFeedsNavigatorKey,
               routes: [
                 GoRoute(
-                  path: Routes.searchPath,
-                  name: Routes.searchRouteName,
+                  path: Routes.newsFeeds,
+                  name: Routes.newsFeedsName,
 
                   pageBuilder: (context, state) => AppTransitions.fade(
                     context: context,
                     state: state,
-                    child: const SearchScreen(),
+
+                     child: BlocProvider(
+                      create: (_) => getIt<PostBloc>(),
+                      child:  NewFeedsScreen(),
+                    ),
                   ),
 
                 ),

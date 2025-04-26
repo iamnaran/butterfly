@@ -20,4 +20,8 @@ class Routes {
 
   static const String searchPath = '/search';
   static const String searchRouteName = 'search';
+
+  static const String newsFeeds = '/newsfeeds';
+  static const String newsFeedsName = 'newsfeeds';
+
 }

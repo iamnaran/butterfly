@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:butterfly/core/database/hive_initalizer.dart';
 import 'package:butterfly/core/di/di_module.dart';
 import 'package:butterfly/core/preference/pref_manager.dart';
@@ -16,7 +18,20 @@ Future<void> main() async {
   await initHive();
   await configureDependenciesInjection();
   AppLogger.configureLogging();
-  runApp(const MyApp());
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Logs the error and stack trace to the console
+    FlutterError.presentError(details);
+    // log error with app logger
+    AppLogger.showError(details.exceptionAsString(), details.stack);
+  };
+
+  runZonedGuarded(() {
+    runApp(MyApp());
+  }, (error, stackTrace) {
+    AppLogger.showError('Caught an error: $error');
+    AppLogger.showError('Stack trace: $stackTrace');
+  });
 }
 
 class MyApp extends StatefulWidget {

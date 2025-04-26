@@ -23,14 +23,17 @@ class BottomNavBar extends StatelessWidget {
           icon: Icon(Icons.explore),
           label: 'Explore',
         ),
+        
         NavigationDestination(
           icon: Icon(Icons.person),
           label: 'Profile',
         ),
+
         NavigationDestination(
-          icon: Icon(Icons.search),
-          label: 'Search',
+          icon: Icon(Icons.newspaper_rounded),
+          label: 'News Feeds',
         ),
+        
       ],
     );
   }

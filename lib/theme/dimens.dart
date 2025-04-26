@@ -27,7 +27,7 @@ class AppDimens {
   static const double borderWidthSmall = 1.0;
   static const double borderWidthMedium = 2.0;
   static const double borderWidthLarge = 4.0;
-  static const double borderWidthExtraLarge = 4.0;
+  static const double borderWidthExtraLarge = 8.0;
 
   static const double iconSize = 24.0;
   static const double iconSizeSmall = 16.0;
