@@ -11,7 +11,6 @@ import 'package:butterfly/core/repository/post/post_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
 
 class PostRepositoryImpl extends IPostRepository {
-
   final IApiServices networkapiservice;
   final PostDatabaseManager _postDatabaseManager;
 
@@ -19,7 +18,7 @@ class PostRepositoryImpl extends IPostRepository {
 
   @override
   Stream<Resource<List<PostEntity>>> getAllProducts() async* {
-    final String url = Endpoints.getPosts(); 
+    final String url = Endpoints.getPosts();
     AppLogger.showError("Post List URL: $url");
 
     // 1. Load data from DB asynchronously if available
@@ -36,9 +35,9 @@ class PostRepositoryImpl extends IPostRepository {
         return;
       }
       final Map<String, dynamic> jsonMap = jsonDecode(response);
-      final postApiResponse = PostResponse.fromJson(jsonMap); 
+      final postApiResponse = PostResponse.fromJson(jsonMap);
       final List<PostEntity> fetchedPosts =
-          PostMapper.fromApiResponse(postApiResponse); 
+          PostMapper.fromApiResponse(postApiResponse);
       _saveApiResult(fetchedPosts);
 
       yield Resource.success(data: fetchedPosts);
@@ -49,10 +48,27 @@ class PostRepositoryImpl extends IPostRepository {
     }
   }
 
+  @override
+  Future<Resource<PostEntity>> createPost(PostEntity createdPost) async {
+    try {
+      // Create a new PostEntity with default/mock values
+
+      // Save the new post into Hive
+      await _postDatabaseManager.savePost(createdPost);
+
+      AppLogger.showError(
+          "Post manually created and saved to Hive: ${createdPost.id}");
+
+      return Resource.success(data: createdPost);
+    } catch (e) {
+      AppLogger.showError("Error while creating Post in Hive: $e");
+      return Resource.failed(
+          error: e is Exception ? e : Exception(e.toString()));
+    }
+  }
+
   Future<void> _saveApiResult(List<PostEntity> posts) async {
     await _postDatabaseManager.savePostList(posts);
     AppLogger.showError("Post list saved to Hive");
   }
-  
-
 }

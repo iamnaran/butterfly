@@ -1,5 +1,5 @@
-
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
+import 'package:butterfly/core/database/entity/post/post_entity.dart';
 import 'package:butterfly/core/database/entity/user/user_entity.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -9,4 +9,6 @@ Future<void> initHive() async {
   Hive.registerAdapter(UserEntityAdapter());
   Hive.registerAdapter(ProductEntityAdapter());
 
+  Hive.registerAdapter(PostEntityAdapter());
+  Hive.registerAdapter(ReactionHiveModelAdapter());
 }

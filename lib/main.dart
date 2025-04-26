@@ -14,19 +14,12 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initHive();
-  await configureDependenciesInjection();
-  AppLogger.configureLogging();
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await initHive();
+    await configureDependenciesInjection();
+    AppLogger.configureLogging();
 
-  FlutterError.onError = (FlutterErrorDetails details) {
-    // Logs the error and stack trace to the console
-    FlutterError.presentError(details);
-    // log error with app logger
-    AppLogger.showError(details.exceptionAsString(), details.stack);
-  };
-
-  runZonedGuarded(() {
     runApp(MyApp());
   }, (error, stackTrace) {
     AppLogger.showError('Caught an error: $error');

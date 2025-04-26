@@ -28,3 +28,23 @@ class PostError extends PostState {
   @override
   List<Object> get props => [message];
 }
+
+class PostCreating extends PostState {
+  final PostEntity post;
+
+  const PostCreating({required this.post});
+
+  @override
+  List<Object> get props => [post];
+}
+
+class PostCreated extends PostState {}
+
+class PostCreatingError extends PostState {
+  final String message;
+
+  const PostCreatingError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

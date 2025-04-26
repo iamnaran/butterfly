@@ -3,4 +3,5 @@ import 'package:butterfly/core/network/base/resource.dart';
 
 abstract class IPostRepository {
     Stream<Resource<List<PostEntity>>> getAllProducts();
+    Future<Resource<PostEntity>> createPost(PostEntity post);
 }

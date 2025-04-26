@@ -1,46 +1,86 @@
+import 'package:butterfly/core/database/entity/post/post_entity.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
-import 'package:butterfly/ui/home/bottombar/feeds/posts/post_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PostScreen extends StatefulWidget {
-  const PostScreen({super.key});
+class CreatePostScreen extends StatefulWidget {
+  const CreatePostScreen({super.key});
 
   @override
-  State<PostScreen> createState() => _PostScreenState();
+  State<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
-class _PostScreenState extends State<PostScreen> {
+class _CreatePostScreenState extends State<CreatePostScreen> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+
   @override
-  void initState() {
-    super.initState();
-    context.read<PostBloc>().add(FetchPosts());
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  void _createPost() {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+
+    if (title.isNotEmpty && content.isNotEmpty) {
+      final post = PostEntity(
+        id: DateTime.now().millisecondsSinceEpoch,
+        title: title,
+        body: content,
+        tags: [],
+        reactions: ReactionHiveModel(likes: 0, dislikes: 0),
+        views: 0,
+        userId: 1,
+      );
+
+      context.read<PostBloc>().add(
+            CreatePost(
+              post: post,
+              onPostCreated: (_) {
+                Navigator.of(context).pop(); // just dismiss
+              },
+            ),
+          );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Posts')),
-      body: BlocBuilder<PostBloc, PostState>(
-        builder: (context, state) {
-          if (state is PostLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is PostLoaded) {
-            final posts = state.posts;
-            return ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-                return PostCard(post: post);
-              },
-            );
-          } else if (state is PostError) {
-            return Center(child: Text('Error: ${state.message}'));
-          } else {
-            return const SizedBox(); // initial empty state
-          }
-        },
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Create Post',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _titleController,
+            decoration: const InputDecoration(
+              labelText: 'Post Title',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _contentController,
+            maxLines: 5,
+            decoration: const InputDecoration(
+              labelText: 'Post Content',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _createPost,
+            child: const Text('Create Post'),
+          ),
+        ],
       ),
     );
   }
