@@ -14,7 +14,7 @@ lib/
 ├── core/                   # Core utilities, constants, error handling
 │   ├── network/            # Network client, interceptors, API base
 │   ├── di/                 # Dependency injection setup (GetIt + Injectable)
-│   └── services/           # Shared Preferences, Connectivity, Logger, etc.
+│   └── di_module/           # Shared Preferences, Connectivity, Logger, etc.
 ├── data/                  
 │   ├── local/              # Hive DB manager, shared_pref helper
 │   ├── remote/             # API services
@@ -47,10 +47,10 @@ lib/
 
 ## 📆 Roadmap
 
-- [ ] Splash Screen
-- [ ] UI Improvements
+- [x] Launcher Icons & Splash Screen
+- [x] UI Improvements
 - [ ] CI/CD Integration
-- [ ] Dark Mode & Theme Support
+- [x] Dark Mode & Theme Support
 - [ ] Localization
 - [ ] Unit and Widget Tests
 
