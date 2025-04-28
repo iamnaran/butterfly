@@ -2,6 +2,7 @@ import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavBar.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
+import 'package:butterfly/ui/mqtt/mqtt_indicator.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,15 +45,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return BlocListener<HomeBloc, HomeState>(
+    
       listener: (context, state) {
         if (state is LogoutSuccess) {
           GoRouter.of(context).goNamed(Routes.loginRouteName);
         }
       },
       child: Scaffold(
-        body: SafeArea( 
-          child: widget.navigationShell,
+        body: SafeArea(
+          child: Stack(
+            // Use Stack to overlay widgets
+            children: [
+              Positioned.fill(
+                // The main content area
+                bottom: 30.0, // Make space for the indicator
+                child: widget.navigationShell,
+              ),
+              Positioned(
+                // Position the indicator at the bottom
+                left: 0,
+                right: 0,
+                bottom: kBottomNavigationBarHeight +
+                    30.0, // Above the bottom nav bar
+                child: const MqttConnectionIndicator(),
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: BlocBuilder<BottomNavCubit, int>(
           builder: (context, selectedIndex) {

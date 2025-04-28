@@ -1,4 +1,5 @@
 import 'package:butterfly/core/di/di_module.dart';
+import 'package:butterfly/core/mqtt/bloc/mqtt_bloc.dart';
 import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/auth/bloc/login_bloc.dart';
 import 'package:butterfly/ui/auth/login_screen.dart';
@@ -46,6 +47,7 @@ class AppRouter {
               providers: [
                 BlocProvider(create: (_) => getIt<HomeBloc>()),
                 BlocProvider(create: (_) => getIt<BottomNavCubit>()),
+                BlocProvider(create: (_) => getIt<MqttBloc>()),
               ],
               child: HomeScreen(navigationShell: navigationShell),
             );

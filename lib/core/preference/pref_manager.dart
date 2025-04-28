@@ -21,4 +21,7 @@ class PreferenceManager {
   bool getLoggedIn() {
     return _prefs.getBool(SharedPreferenceKeys.isLoggedIn) ?? false;
   }
+  
+
+
 }
