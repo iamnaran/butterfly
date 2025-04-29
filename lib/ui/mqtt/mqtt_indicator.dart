@@ -11,29 +11,31 @@ class MqttConnectionIndicator extends StatelessWidget {
       builder: (context, state) {
         String statusText = 'Disconnected';
         Color backgroundColor = Colors.red.withAlpha((0.8 * 255).toInt());
-        TextStyle textStyle = const TextStyle(color: Colors.white, fontSize: 8);
 
         if (state is MqttConnecting) {
           statusText = 'Connecting...';
-          backgroundColor = Colors.yellow.withAlpha((0.8 * 255).toInt());
-          textStyle = const TextStyle(color: Colors.black87, fontSize: 12);
+          backgroundColor = const Color.fromARGB(255, 116, 106, 13)
+              .withAlpha((0.8 * 255).toInt());
         } else if (state is MqttConnected) {
           statusText = 'Connected';
-          backgroundColor = Colors.green.withAlpha((0.8 * 255).toInt());
+          backgroundColor = const Color.fromARGB(255, 81, 92, 218)
+              .withAlpha((0.8 * 255).toInt());
         } else if (state is MqttDisconnected) {
           statusText = 'Disconnected';
-          backgroundColor = Colors.red.withAlpha((0.8 * 255).toInt());
+          backgroundColor = const Color.fromARGB(255, 170, 39, 30)
+              .withAlpha((0.8 * 255).toInt());
         } else if (state is MqttConnectionFailed) {
           statusText = 'Connection Failed';
-          backgroundColor = Colors.orange.withAlpha((0.8 * 255).toInt());
+          backgroundColor = const Color.fromARGB(255, 239, 116, 235)
+              .withAlpha((0.8 * 255).toInt());
         }
 
         return Container(
-          height: 12.0,
+          height: 20.0,
           color: backgroundColor,
           child: Center(
-            child: Text(statusText, style: textStyle),
-          ),
+              child: Text(statusText,
+                  style: Theme.of(context).textTheme.labelSmall)),
         );
       },
     );

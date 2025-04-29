@@ -12,6 +12,8 @@ class MQTTConnection {
   String? clientId;
   String? username;
   String? password;
+  String? token;
+  String? sessionId;
 
   String? caCertPath;
   String? clientCertPath;
@@ -43,16 +45,14 @@ class MQTTConnection {
     required String broker,
     required String username,
     required String password,
-    required String caCertPath,
-    required String clientCertPath,
-    required String clientKeyPath,
+    required String token,
+    required String sessionId,
   }) {
     this.broker = broker;
     this.username = username;
     this.password = password;
-    this.caCertPath = caCertPath;
-    this.clientCertPath = clientCertPath;
-    this.clientKeyPath = clientKeyPath;
+    this.token = token;
+    this.sessionId = sessionId;
   }
 
   int _reconnectAttempts = 0;
@@ -62,11 +62,12 @@ class MQTTConnection {
   Future<void> connect() async {
     _connectionStatusController.add(MqttConnectionState.connecting);
 
-    _client = MqttServerClient.withPort(broker!, clientId!, 8883);
+    _client = MqttServerClient.withPort(broker!, clientId!, 1883);
 
     final MqttConnectMessage connMess = MqttConnectMessage()
         .withClientIdentifier(clientId!)
-        .withWillQos(MqttQos.atLeastOnce);
+        .withWillQos(MqttQos.atLeastOnce)
+        .startClean();
 
     // ack msg
 
@@ -90,10 +91,8 @@ class MQTTConnection {
           ..usePrivateKeyBytes(clientKey.codeUnits)
           ..setTrustedCertificatesBytes(caCert.codeUnits)
           ..minimumTlsProtocolVersion = TlsProtocolVersion.tls1_2;
-      
-      _client!.securityContext = securityContext;
 
-      
+        _client!.securityContext = securityContext;
       } catch (e) {
         debugPrint('Error loading certificates: $e');
         _connectionStatusController.add(MqttConnectionState.faulted);
@@ -102,6 +101,7 @@ class MQTTConnection {
     }
 
     _client!.logging(on: true);
+    _client!.setProtocolV311();
 
     _client!.onConnected = () {
       _connectionStatusController.add(MqttConnectionState.connected);
@@ -112,10 +112,14 @@ class MQTTConnection {
     _client!.onDisconnected = () {
       if (_client!.connectionStatus?.disconnectionOrigin ==
           MqttDisconnectionOrigin.solicited) {
-        _connectionStatusController.add(MqttConnectionState.disconnected);
+        if (!_connectionStatusController.isClosed) {
+          _connectionStatusController.add(MqttConnectionState.disconnected);
+        }
         debugPrint('MQTT client disconnected');
       } else {
-        _connectionStatusController.add(MqttConnectionState.faulted);
+        if (!_connectionStatusController.isClosed) {
+          _connectionStatusController.add(MqttConnectionState.faulted);
+        }
         _connectionCompleter.isCompleted
             ? null
             : _connectionCompleter.completeError('Connection failed');
@@ -128,18 +132,23 @@ class MQTTConnection {
     try {
       await _client!.connect();
     } on NoConnectionException catch (e) {
-      _connectionStatusController.add(MqttConnectionState.faulted);
+      if (!_connectionStatusController.isClosed) {
+        _connectionStatusController.add(MqttConnectionState.faulted);
+      }
       _connectionCompleter.isCompleted
           ? null
           : _connectionCompleter.completeError(e);
       debugPrint('MQTT client exception - No connection: $e');
       _disconnect();
     } on SocketException catch (e) {
+      if (!_connectionStatusController.isClosed) {
+        _connectionStatusController.add(MqttConnectionState.faulted);
+      }
       _connectionStatusController.add(MqttConnectionState.faulted);
-      _connectionCompleter.isCompleted
-          ? null
-          : _connectionCompleter.completeError(e);
       debugPrint('MQTT client exception - Socket exception: $e');
+      if (!_connectionCompleter.isCompleted) {
+        _connectionCompleter.completeError('Max reconnection attempts failed');
+      }
       _reconnect();
     }
   }

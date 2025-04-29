@@ -25,7 +25,6 @@ class PostCard extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: 8),
-
             AppText(
               text: post.body,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -34,23 +33,29 @@ class PostCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
+            /// Tags
+            if (post.tags.isNotEmpty)
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: post.tags
+                    .map((tag) => Chip(
+                          label: Text(tag, style: Theme.of(context).textTheme.labelSmall),
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                        ))
+                    .toList(),
+              ),
+
+            const SizedBox(height: 12),
+
+            /// Stats Row
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Wrap(
-                  spacing: 6,
-                  children: post.tags.map((tag) => Chip(label: Text(tag))).toList(),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.thumb_up, size: 18, color: Colors.green),
-                    const SizedBox(width: 4),
-                    const SizedBox(width: 12),
-                    Icon(Icons.visibility, size: 18),
-                    const SizedBox(width: 4),
-                    Text(post.views.toString()),
-                  ],
-                )
+                Icon(Icons.visibility, size: 18),
+                const SizedBox(width: 4),
+                Text(post.views.toString()),
               ],
             ),
           ],

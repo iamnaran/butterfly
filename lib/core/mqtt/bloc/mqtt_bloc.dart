@@ -47,6 +47,14 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
   ) async {
     if (state is! MqttConnecting && state is! MqttConnected) {
       emit(MqttConnecting());
+      // setup mqtt connection parameters
+      _mqttConnection.configure(
+        broker: 'test.mosquitto.org',
+        username: 'your_username',
+        password: 'your_password',
+        token: 'MDU0YTNjOTU2NzVjNDA2NGFjYTQwODM4ZmQwYzgwN2EuZjYyN2JhOGNlNjg4NDU2NDlhZTk4N2ViYWQ3NjQyM2M=.8bbff5cf9e417fb418d91a64c4c36097596e39858587bd3cfe80ca2b6a4e4b97fd3b99fcd398a968e1a8dcd93dfe2c1f79a4d369f0b40cb341e7e314c92e285e',
+        sessionId: 'f627ba8ce68845649ae987ebad76423c',
+      );
       await _mqttConnection.connect();
     }
   }
