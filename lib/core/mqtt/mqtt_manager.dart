@@ -5,16 +5,17 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:uuid/uuid.dart';
 
 class MQTTConnection {
-  final String broker;
-  final String clientId;
-  final String? username;
-  final String? password;
+  String? broker;
+  String? clientId;
+  String? username;
+  String? password;
 
-  final String? caCertPath;
-  final String? clientCertPath;
-  final String? clientKeyPath;
+  String? caCertPath;
+  String? clientCertPath;
+  String? clientKeyPath;
 
   final MqttQos defaultQos;
 
@@ -23,7 +24,7 @@ class MQTTConnection {
 
   final StreamController<MqttConnectionState> _connectionStatusController =
       StreamController<MqttConnectionState>.broadcast();
-      
+
   Stream<MqttConnectionState> get connectionStatusStream =>
       _connectionStatusController.stream;
 
@@ -33,27 +34,41 @@ class MQTTConnection {
   Future<void> get onConnected => _connectionCompleter.future;
 
   MQTTConnection({
-    required this.broker,
-    required this.clientId,
-    this.username,
-    this.password,
-    this.caCertPath,
-    this.clientCertPath,
-    this.clientKeyPath,
     this.defaultQos = MqttQos.atLeastOnce,
-  });
+  }) {
+    clientId = generateUUIDString();
+  }
+
+  void configure({
+    required String broker,
+    required String username,
+    required String password,
+    required String caCertPath,
+    required String clientCertPath,
+    required String clientKeyPath,
+  }) {
+    this.broker = broker;
+    this.username = username;
+    this.password = password;
+    this.caCertPath = caCertPath;
+    this.clientCertPath = clientCertPath;
+    this.clientKeyPath = clientKeyPath;
+  }
+
+  int _reconnectAttempts = 0;
+  final int _maxReconnectAttempts = 5;
+  final Duration _reconnectDelay = const Duration(seconds: 5);
 
   Future<void> connect() async {
     _connectionStatusController.add(MqttConnectionState.connecting);
 
-    _client = MqttServerClient.withPort(broker, clientId, 8883);
+    _client = MqttServerClient.withPort(broker!, clientId!, 8883);
 
     final MqttConnectMessage connMess = MqttConnectMessage()
-        .withClientIdentifier(clientId)
+        .withClientIdentifier(clientId!)
         .withWillQos(MqttQos.atLeastOnce);
 
-    
-   // ack msg 
+    // ack msg
 
     if (username != null && password != null) {
       connMess.authenticateAs(username!, password!);
@@ -66,7 +81,7 @@ class MQTTConnection {
         final clientKey = await getHardcodedClientKey();
 
         if (caCert == null || clientCert == null || clientKey == null) {
-            throw Exception('Certificate or key is missing.');
+          throw Exception('Certificate or key is missing.');
         }
 
         final securityContext = SecurityContext(withTrustedRoots: true)
@@ -75,8 +90,10 @@ class MQTTConnection {
           ..usePrivateKeyBytes(clientKey.codeUnits)
           ..setTrustedCertificatesBytes(caCert.codeUnits)
           ..minimumTlsProtocolVersion = TlsProtocolVersion.tls1_2;
+      
+      _client!.securityContext = securityContext;
 
-        _client!.securityContext = securityContext;
+      
       } catch (e) {
         debugPrint('Error loading certificates: $e');
         _connectionStatusController.add(MqttConnectionState.faulted);
@@ -123,7 +140,21 @@ class MQTTConnection {
           ? null
           : _connectionCompleter.completeError(e);
       debugPrint('MQTT client exception - Socket exception: $e');
-      _disconnect();
+      _reconnect();
+    }
+  }
+
+  Future<void> _reconnect() async {
+    if (_reconnectAttempts < _maxReconnectAttempts) {
+      _reconnectAttempts++;
+      debugPrint(
+          'Attempting to reconnect in ${_reconnectDelay.inSeconds} seconds (Attempt $_reconnectAttempts of $_maxReconnectAttempts)');
+      await Future.delayed(_reconnectDelay);
+      connect(); // Call connect again
+    } else {
+      debugPrint(
+          'Max reconnection attempts reached. Connection failed permanently.');
+      _disconnect(); // Ensure resources are cleaned up
     }
   }
 
@@ -200,5 +231,10 @@ class MQTTConnection {
   void dispose() {
     _disconnect();
     _connectionStatusController.close();
+  }
+
+  String generateUUIDString() {
+    const uuid = Uuid();
+    return uuid.v4();
   }
 }

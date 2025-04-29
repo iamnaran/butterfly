@@ -2,6 +2,7 @@ import 'package:butterfly/core/database/manager/post_db_manager.dart';
 import 'package:butterfly/core/database/manager/product_db_manager.dart';
 import 'package:butterfly/core/database/manager/user_db_manager.dart';
 import 'package:butterfly/core/mqtt/bloc/mqtt_bloc.dart';
+import 'package:butterfly/core/mqtt/mqtt_manager.dart';
 import 'package:butterfly/core/network/services/api_services.dart';
 import 'package:butterfly/core/network/services/api_services_impl.dart';
 import 'package:butterfly/core/preference/pref_manager.dart';
@@ -84,6 +85,12 @@ Future<void> configureDependenciesInjection() async {
 
   getIt.registerFactory<ProductDetailBloc>(
     () => ProductDetailBloc(getIt.get<IExploreRepository>()),
+  );
+
+
+  // Mqtt Injections
+  getIt.registerLazySingleton<MQTTConnection>(
+    () => MQTTConnection(),
   );
 
   getIt.registerFactory<MqttBloc>(

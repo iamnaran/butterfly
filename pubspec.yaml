@@ -50,6 +50,7 @@ dependencies:
   flutter_cache_manager: ^3.4.1
   shared_preferences: ^2.2.2
   mqtt_client: ^10.8.0
+  uuid: ^4.2.1
 
 dev_dependencies:
   flutter_test:

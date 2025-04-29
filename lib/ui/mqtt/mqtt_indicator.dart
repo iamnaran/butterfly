@@ -11,8 +11,7 @@ class MqttConnectionIndicator extends StatelessWidget {
       builder: (context, state) {
         String statusText = 'Disconnected';
         Color backgroundColor = Colors.red.withAlpha((0.8 * 255).toInt());
-        TextStyle textStyle =
-            const TextStyle(color: Colors.white, fontSize: 8);
+        TextStyle textStyle = const TextStyle(color: Colors.white, fontSize: 8);
 
         if (state is MqttConnecting) {
           statusText = 'Connecting...';
@@ -30,7 +29,7 @@ class MqttConnectionIndicator extends StatelessWidget {
         }
 
         return Container(
-          height: 4.0,
+          height: 12.0,
           color: backgroundColor,
           child: Center(
             child: Text(statusText, style: textStyle),
