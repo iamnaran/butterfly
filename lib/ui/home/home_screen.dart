@@ -1,3 +1,4 @@
+import 'package:butterfly/core/mqtt/bloc/mqtt_bloc.dart';
 import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavBar.dart';
@@ -18,9 +19,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   @override
   void initState() {
     super.initState();
+
+    context.read<MqttBloc>().add(MqttConnectRequested());
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateSelectedIndex(context);
     });
@@ -45,34 +50,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     return BlocListener<HomeBloc, HomeState>(
-    
       listener: (context, state) {
         if (state is LogoutSuccess) {
           GoRouter.of(context).goNamed(Routes.loginRouteName);
         }
       },
       child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 8,
+          title: const MqttConnectionIndicator(),
+        ),
         body: SafeArea(
-          child: Stack(
-            // Use Stack to overlay widgets
-            children: [
-              Positioned.fill(
-                // The main content area
-                bottom: 30.0, // Make space for the indicator
-                child: widget.navigationShell,
-              ),
-              Positioned(
-                // Position the indicator at the bottom
-                left: 0,
-                right: 0,
-                bottom: kBottomNavigationBarHeight +
-                    30.0, // Above the bottom nav bar
-                child: const MqttConnectionIndicator(),
-              ),
-            ],
-          ),
+          child: widget.navigationShell,
         ),
         bottomNavigationBar: BlocBuilder<BottomNavCubit, int>(
           builder: (context, selectedIndex) {
