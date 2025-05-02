@@ -42,13 +42,11 @@ class MQTTConnection {
     required String broker,
     required String username,
     required String password,
-    required String token,
     required String sessionId,
   }) {
     this.broker = broker;
     this.username = username;
     this.password = password;
-    this.token = token;
     this.sessionId = sessionId;
   }
 
@@ -64,6 +62,7 @@ class MQTTConnection {
     // _client = MqttServerClient.withPort(broker!, clientId!, 443);
 
     _client = MqttServerClient(broker!, clientId!);
+    _client!.secure = true;
     _client!.port = 443;
 
     try {
@@ -76,7 +75,6 @@ class MQTTConnection {
     // check if security context is loaded
 
     _client!.logging(on: true);
-    _client!.secure = true;
     _client!.keepAlivePeriod = 60;
     _client!.setProtocolV311();
 
@@ -120,44 +118,45 @@ class MQTTConnection {
     _client!.connectionMessage = connMess;
 
     try {
-      // print broker url, port
-      debugPrint('Connecting to broker : $broker, $clientId, $username, $password');
-      await _client!.connect();
-    } on NoConnectionException catch (e) {
-      if (!_connectionStatusController.isClosed) {
-        _connectionStatusController.add(MqttConnectionState.faulted);
-      }
-      _connectionCompleter.isCompleted
-          ? null
-          : _connectionCompleter.completeError(e);
-      debugPrint('MQTT client exception - No connection: $e');
-      _disconnect();
-    } on SocketException catch (e) {
-      if (!_connectionStatusController.isClosed) {
-        _connectionStatusController.add(MqttConnectionState.faulted);
-      }
-      _connectionStatusController.add(MqttConnectionState.faulted);
-      debugPrint('MQTT client exception - Socket exception: $e');
-      if (!_connectionCompleter.isCompleted) {
-        _connectionCompleter.completeError('Max reconnection attempts failed');
-      }
-      _reconnect();
-    }
+    debugPrint('Connecting to broker : $broker, $clientId, $username, $password');
+    await _client!.connect();
+  } on NoConnectionException catch (e) {
+    debugPrint('MQTT client exception - No connection: $e');
+    _connectionStatusController.add(MqttConnectionState.faulted);
+    _connectionCompleter.completeError('Max reconnection attempts failed');
+    _disconnect();
+  } on SocketException catch (e) {
+    debugPrint('SocketException: $e');
+    _connectionStatusController.add(MqttConnectionState.faulted);
+    _reconnect();
+  } catch (e) {
+    debugPrint('Unexpected error: $e');
+    _connectionStatusController.add(MqttConnectionState.faulted);
+    _connectionCompleter.completeError('Unexpected error: $e');
+    _disconnect();
+  }
+
+
   }
 
   Future<void> _reconnect() async {
-    if (_reconnectAttempts < _maxReconnectAttempts) {
-      _reconnectAttempts++;
-      debugPrint(
-          'Attempting to reconnect in ${_reconnectDelay.inSeconds} seconds (Attempt $_reconnectAttempts of $_maxReconnectAttempts)');
-      await Future.delayed(_reconnectDelay);
-      connect(); // Call connect again
-    } else {
-      debugPrint(
-          'Max reconnection attempts reached. Connection failed permanently.');
-      _disconnect(); // Ensure resources are cleaned up
+  while (_reconnectAttempts < _maxReconnectAttempts) {
+    _reconnectAttempts++;
+    debugPrint(
+        'Attempting to reconnect in ${_reconnectDelay.inSeconds} seconds (Attempt $_reconnectAttempts of $_maxReconnectAttempts)');
+    await Future.delayed(_reconnectDelay);
+
+    try {
+      await connect(); // Try connecting again
+      return; // If connection succeeds, break out of the loop
+    } catch (e) {
+      debugPrint('Reconnect attempt $_reconnectAttempts failed: $e');
     }
   }
+
+  debugPrint('Max reconnection attempts reached. Connection failed permanently.');
+  _disconnect(); // Ensure resources are cleaned up
+}
 
   Future<void> disconnect() async {
     _disconnect();
@@ -206,57 +205,6 @@ class MQTTConnection {
   }
 
 // ca cert
-
-  static Future<String?> getCaCert() async {
-    return """
------BEGIN CERTIFICATE-----
-MIIDEzCCAfugAwIBAgIBAjANBgkqhkiG9w0BAQsFADA/MQswCQYDVQQGEwJDTjER
-MA8GA1UECAwIaGFuZ3pob3UxDDAKBgNVBAoMA0VNUTEPMA0GA1UEAwwGUm9vdENB
-MB4XDTIwMDUwODA4MDcwNVoXDTMwMDUwNjA4MDcwNVowPzELMAkGA1UEBhMCQ04x
-ETAPBgNVBAgMCGhhbmd6aG91MQwwCgYDVQQKDANFTVExDzANBgNVBAMMBlNlcnZl
-cjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALNeWT3pE+QFfiRJzKmn
-AMUrWo3K2j/Tm3+Xnl6WLz67/0rcYrJbbKvS3uyRP/stXyXEKw9CepyQ1ViBVFkW
-Aoy8qQEOWFDsZc/5UzhXUnb6LXr3qTkFEjNmhj+7uzv/lbBxlUG1NlYzSeOB6/RT
-8zH/lhOeKhLnWYPXdXKsa1FL6ij4X8DeDO1kY7fvAGmBn/THh1uTpDizM4YmeI+7
-4dmayA5xXvARte5h4Vu5SIze7iC057N+vymToMk2Jgk+ZZFpyXrnq+yo6RaD3ANc
-lrc4FbeUQZ5a5s5Sxgs9a0Y3WMG+7c5VnVXcbjBRz/aq2NtOnQQjikKKQA8GF080
-BQkCAwEAAaMaMBgwCQYDVR0TBAIwADALBgNVHQ8EBAMCBeAwDQYJKoZIhvcNAQEL
-BQADggEBAJefnMZpaRDHQSNUIEL3iwGXE9c6PmIsQVE2ustr+CakBp3TZ4l0enLt
-iGMfEVFju69cO4oyokWv+hl5eCMkHBf14Kv51vj448jowYnF1zmzn7SEzm5Uzlsa
-sqjtAprnLyof69WtLU1j5rYWBuFX86yOTwRAFNjm9fvhAcrEONBsQtqipBWkMROp
-iUYMkRqbKcQMdwxov+lHBYKq9zbWRoqLROAn54SRqgQk6c15JdEfg
------END CERTIFICATE-----
-  """;
-  }
-
-// client key
-
-  static Future<String?> getClientKey() async {
-    return """
-  -----BEGIN PRIVATE KEY-----
-MIIEpAIBAAKCAQEA7yhhQzfgTYV79Y3FlhQ93lD5e9fh+6tQfXql5w2/5kdmVG/J
-X2A2Ay7B/52EjPB7xWErv3lbksJ6ApIMffkaEXeO3U5cuHaQJkcnx1dYIifEKXsY
-s82cLTFpz/Kq6sqjttSfu2w0gt2nxaNKjxUV+g==
------END PRIVATE KEY-----
-  """;
-  }
-
-// client cert
-  static Future<String?> getClientCert() async {
-    return """
------BEGIN CERTIFICATE-----
-MIIDEzCCAfugAwIBAgIBATANBgkqhkiG9w0BAQsFADA/MQswCQYDVQQGEwJDTjER
-MA8GA1UECAwIaGFuZ3pob3UxDDAKBgNVBAoMA0VNUTEPMA0GA1UEAwwGUm9vdENB
-MB4XDTIwMDUwODA4MDY1N1oXDTMwMDUwNjA4MDY1N1owPzELMAkGA1UEBhMCQ04x
-ETAPBgNVBAgMCGhhbmd6aG91MQwwCgYDVQQKDANFTVExDzANBgNVBAMMBkNsaWVu
-dDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMy4hoksKcZBDbY680u6
-TS25U51nuB1FBcGMlF9B/t057wPOlxF/OcmbxY5MwepS41JDGPgulE1V7fpsXkiW
-1LUimYV/tsqBfymIe0mlY7oORahKji7zKQ2UBIVFhdlvQxunlIDnw6F9popUgyHt
-dMhtlgZK8oqRwHxO5dbfoukYd6J/r+etS5q26sgVkf3C6dt0Td7B25H9qW+f7oLV
------END CERTIFICATE-----
-  """;
-  }
-
   void dispose() {
     _disconnect();
     _connectionStatusController.close();

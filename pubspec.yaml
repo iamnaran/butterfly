@@ -51,6 +51,7 @@ dependencies:
   shared_preferences: ^2.2.2
   mqtt_client: ^10.8.0
   uuid: ^4.2.1
+  pointycastle: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -97,11 +98,9 @@ flutter:
   assets:
     - assets/fonts/
     - assets/icon/
-    - assets/cert/ca_cert.pem
-    - assets/cert/client_cert.pem
-    - assets/cert/client_key.pem
-    - assets/cert/client_key_rsa.pem
-    - assets/cert/test.crt.pem
+    - assets/cert/ca.cert
+    - assets/cert/client.pem
+    - assets/cert/client.key
 
   fonts:
     - family: Poppins

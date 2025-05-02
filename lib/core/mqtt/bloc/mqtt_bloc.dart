@@ -51,14 +51,15 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
       emit(MqttConnecting());
       // setup mqtt connection parameters
       _mqttConnection.configure(
-        broker: 'rt-internal-edge-a.anydone.us',
-        username: 'fad32b9df374291832e1b1ec420fac7|a914abf9695443bd8699a00d51a81231',
+        broker: 'rt-external-mqtt-edge-a.anydone.us',
+        username: 'd209e090eced4675b1d89a06ccd92482',
         password:
-            'MWZhZDMyYjlkZjM3NDI5MTgzMmUxYjFlYzQyMGZhYzcuYTkxNGFiZjk2OTU0NDNiZDg2OTlhMDBkNTFhODEyMzE=.d4c0968d1b154f4452895cb522876eb0943268a5562199d5d801ec326f57d3d9c0f4860b716339b1b1110ad0d3174ffc40eb09203f5aeb9cb8fe224d3dd7b82f',
-        token:
-            'MWZhZDMyYjlkZjM3NDI5MTgzMmUxYjFlYzQyMGZhYzcuYTkxNGFiZjk2OTU0NDNiZDg2OTlhMDBkNTFhODEyMzE=.d4c0968d1b154f4452895cb522876eb0943268a5562199d5d801ec326f57d3d9c0f4860b716339b1b1110ad0d3174ffc40eb09203f5aeb9cb8fe224d3dd7b82f',
-        sessionId: 'f627ba8ce68845649ae987ebad76423c',
+            'ZTlmNmVlODRhNDBkNGI3MGE0OGZiYzQ1NmMyNjE0ODIuZDIwOWUwOTBlY2VkNDY3NWIxZDg5YTA2Y2NkOTI0ODI=.f78e51860cd303e6a82e86bee4f1ccd408d24376efa37839974a7f717cc61a08ae5b8e6c098aac7dfe8f3cb2cc60c12ae01e26cc586881404a4e68837f76e806',
+             sessionId: 'e9f6ee84a40d4b70a48fbc456c261482',
       );
+
+      // openssl s_client -connect rt-external-mqtt-edge-a.anydone.us:443
+
 
       // _mqttConnection.configure(
       //   broker: 'mqtt.anydone.com',

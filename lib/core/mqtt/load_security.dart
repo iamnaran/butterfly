@@ -3,45 +3,42 @@ import 'package:flutter/services.dart';
 
 class CertificateManager {
   static Future<SecurityContext> loadCertificates() async {
+    final securityContext = SecurityContext(withTrustedRoots: true);
     try {
-      final context = SecurityContext(withTrustedRoots: true);
-
-      // Load CA
-      final caBytes = await _loadPemBytes("assets/cert/ca_cert.pem");
-      if (caBytes != null) {
-        context.setTrustedCertificatesBytes(caBytes);
-        print("✅ CA certificate loaded successfully.");
-
+      // Load Client Certificate
+      try {
+        final clientCertData = await rootBundle.load('assets/cert/client.pem');
+        securityContext.useCertificateChainBytes(clientCertData.buffer.asUint8List());
+        print('Client certificate loaded successfully.');
+      } catch (e) {
+        print('Error loading client certificate: $e');
+        // Handle error appropriately, maybe throw or return a default context
       }
 
-      // Load client certificate and private key
-      final certBytes = await _loadPemBytes("assets/cert/client_cert.pem");
-      final keyBytes = await _loadPemBytes("assets/cert/client_key.pem");
-
-      if (certBytes != null && keyBytes != null) {
-
-        context.useCertificateChainBytes(certBytes);
-        context.usePrivateKeyBytes(keyBytes);
-        print("✅ Certificate and private key loaded successfully.");
-
+      // Load Private Key
+      try {
+        final privateKeyData = await rootBundle.load('assets/cert/client.key');
+        securityContext.usePrivateKeyBytes(privateKeyData.buffer.asUint8List());
+        print('Private key loaded successfully.');
+      } catch (e) {
+        print('Error loading private key: $e');
+        // Handle error appropriately
       }
 
-      // print loaded certificates
-      print("✅ Loaded CA, client certificate, and private key successfully.");
+      // Load Root CA Certificate (to trust the server)
+      try {
+        final rootCAData = await rootBundle.load('assets/cert/ca.cert');
+        securityContext.setTrustedCertificatesBytes(rootCAData.buffer.asUint8List());
+        print('Root CA certificate loaded successfully.');
+      } catch (e) {
+        print('Error loading Root CA certificate: $e');
+        // Handle the error appropriately
+      }
 
-      return context;
+      return securityContext;
     } catch (e) {
-      throw Exception('❌ Failed to load certificates: $e');
-    }
-  }
-
-  static Future<Uint8List?> _loadPemBytes(String assetPath) async {
-    try {
-      final data = await rootBundle.load(assetPath);
-      return data.buffer.asUint8List();
-    } catch (e) {
-      print("⚠️ Failed to read $assetPath: $e");
-      return null;
+      print('Error initializing SecurityContext: $e');
+      return SecurityContext(withTrustedRoots: true); // Or handle error as needed
     }
   }
 }
