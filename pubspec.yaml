@@ -100,6 +100,8 @@ flutter:
     - assets/cert/ca_cert.pem
     - assets/cert/client_cert.pem
     - assets/cert/client_key.pem
+    - assets/cert/client_key_rsa.pem
+    - assets/cert/test.crt.pem
 
   fonts:
     - family: Poppins

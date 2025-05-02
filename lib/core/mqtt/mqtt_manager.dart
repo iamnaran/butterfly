@@ -2,9 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
 import 'package:butterfly/core/mqtt/load_security.dart';
-import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -63,22 +61,19 @@ class MQTTConnection {
 
     _connectionStatusController.add(MqttConnectionState.connecting);
 
-    // _client = MqttServerClient.withPort(broker!, clientId!, 1883);
+    // _client = MqttServerClient.withPort(broker!, clientId!, 443);
 
-    _client = MqttServerClient(broker!, 'client-idflutter_client_xasasa');
-    _client!.port = 433;
+    _client = MqttServerClient(broker!, clientId!);
+    _client!.port = 443;
 
     try {
-      _client!.securityContext = await createSecurityContext();
+      _client!.securityContext = await CertificateManager.loadCertificates();
     } catch (e) {
       debugPrint('Error loading certificates: $e');
       _connectionStatusController.add(MqttConnectionState.faulted);
       return;
     }
-    _client!.onBadCertificate = (X509Certificate cert) {
-      debugPrint('Bad certificate: ${cert.pem}');
-      return true; // Accept the bad certificate
-    };
+    // check if security context is loaded
 
     _client!.logging(on: true);
     _client!.secure = true;
@@ -86,9 +81,13 @@ class MQTTConnection {
     _client!.setProtocolV311();
 
     final MqttConnectMessage connMess = MqttConnectMessage()
-    .withClientIdentifier(clientId!)
-    .withWillQos(MqttQos.atLeastOnce)
-    .startClean();
+        .withClientIdentifier(clientId!)
+        .withWillQos(MqttQos.atLeastOnce)
+        .startClean();
+
+    // print username   password
+    debugPrint('MQTT client username: $username');
+    debugPrint('MQTT client password: $password');
 
     if (username != null && password != null) {
       connMess.authenticateAs(username!, password!);
@@ -118,12 +117,11 @@ class MQTTConnection {
       }
     };
 
-    _client!.connectionMessage = connMess; 
+    _client!.connectionMessage = connMess;
 
     try {
-
       // print broker url, port
-      debugPrint('Connecting to broker MORNING : $broker, port: 1883');
+      debugPrint('Connecting to broker : $broker, $clientId, $username, $password');
       await _client!.connect();
     } on NoConnectionException catch (e) {
       if (!_connectionStatusController.isClosed) {

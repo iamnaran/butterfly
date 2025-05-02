@@ -1,28 +1,47 @@
 import 'dart:io';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart';
 
-Future<SecurityContext> createSecurityContext() async {
-  final context = SecurityContext();
+class CertificateManager {
+  static Future<SecurityContext> loadCertificates() async {
+    try {
+      final context = SecurityContext(withTrustedRoots: true);
 
-  // Load PEM contents from assets
-  final caCert = await rootBundle.loadString('assets/cert/ca_cert.pem');
-  final clientCert = await rootBundle.loadString('assets/cert/client_cert.pem');
-  final clientKey = await rootBundle.loadString('assets/cert/client_key.pem');
+      // Load CA
+      final caBytes = await _loadPemBytes("assets/cert/ca_cert.pem");
+      if (caBytes != null) {
+        context.setTrustedCertificatesBytes(caBytes);
+        print("✅ CA certificate loaded successfully.");
 
-  // Create temporary files
-  final tempDir = Directory.systemTemp;
-  final caFile = File('${tempDir.path}/ca.pem')..writeAsStringSync(caCert);
-  final certFile = File('${tempDir.path}/client_cert.pem')..writeAsStringSync(clientCert);
-  final keyFile = File('${tempDir.path}/client_key.pem')..writeAsStringSync(clientKey);
+      }
 
-  // print what strings are being written to the files
-  print('Loading only Private Keys File Certificate: $caCert');
+      // Load client certificate and private key
+      final certBytes = await _loadPemBytes("assets/cert/client_cert.pem");
+      final keyBytes = await _loadPemBytes("assets/cert/client_key.pem");
 
-  // Configure SecurityContext
+      if (certBytes != null && keyBytes != null) {
 
-  context.setTrustedCertificates(caFile.path);
-  context.useCertificateChain(certFile.path);
-  context.usePrivateKey(keyFile.path);
+        context.useCertificateChainBytes(certBytes);
+        context.usePrivateKeyBytes(keyBytes);
+        print("✅ Certificate and private key loaded successfully.");
 
-  return context;
+      }
+
+      // print loaded certificates
+      print("✅ Loaded CA, client certificate, and private key successfully.");
+
+      return context;
+    } catch (e) {
+      throw Exception('❌ Failed to load certificates: $e');
+    }
+  }
+
+  static Future<Uint8List?> _loadPemBytes(String assetPath) async {
+    try {
+      final data = await rootBundle.load(assetPath);
+      return data.buffer.asUint8List();
+    } catch (e) {
+      print("⚠️ Failed to read $assetPath: $e");
+      return null;
+    }
+  }
 }
