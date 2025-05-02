@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:butterfly/core/mqtt/load_security.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -64,50 +65,34 @@ class MQTTConnection {
 
     // _client = MqttServerClient.withPort(broker!, clientId!, 1883);
 
-    _client = MqttServerClient('test.mosquitto.org', 'client-idflutter_client_xasasa');
-    _client!.port = 1883;
+    _client = MqttServerClient(broker!, 'client-idflutter_client_xasasa');
+    _client!.port = 433;
 
-    // final MqttConnectMessage connMess = MqttConnectMessage()
-    //     .withClientIdentifier(clientId!)
-    //     .withWillQos(MqttQos.atLeastOnce)
-    //     .startClean();
-
-    // ack msg
-
-    // if (username != null && password != null) {
-    //   connMess.authenticateAs(username!, password!);
-    // }
-
-    // try {
-    //   final caCert = await getCaCert();
-    //   final clientCert = await getClientCert();
-    //   final clientKey = await getClientKey();
-
-    //   if (caCert == null || clientCert == null || clientKey == null) {
-    //     throw Exception('Certificate or key is missing.');
-    //   }
-    //   // print ca cert
-    //   debugPrint('CA Cert: $caCert');
-    //   debugPrint('Client Cert: $clientCert');
-    //   debugPrint('Client Key: $clientKey');
-
-      // final securityContext = SecurityContext(withTrustedRoots: true)
-      //   ..setTrustedCertificates()
-      //   ..setClientAuthorities(utf8.encode(caCert))
-      //   ..useCertificateChain(utf8.encode(clientCert))
-      //   ..usePrivateKey())
-    
-    //   _client!.securityContext = securityContext;
-    // } catch (e) {
-    //   debugPrint('Error loading certificates: $e');
-    //   _connectionStatusController.add(MqttConnectionState.faulted);
-    //   return;
-    // }
+    try {
+      _client!.securityContext = await createSecurityContext();
+    } catch (e) {
+      debugPrint('Error loading certificates: $e');
+      _connectionStatusController.add(MqttConnectionState.faulted);
+      return;
+    }
+    _client!.onBadCertificate = (X509Certificate cert) {
+      debugPrint('Bad certificate: ${cert.pem}');
+      return true; // Accept the bad certificate
+    };
 
     _client!.logging(on: true);
-    _client!.secure = false;
+    _client!.secure = true;
     _client!.keepAlivePeriod = 60;
     _client!.setProtocolV311();
+
+    final MqttConnectMessage connMess = MqttConnectMessage()
+    .withClientIdentifier(clientId!)
+    .withWillQos(MqttQos.atLeastOnce)
+    .startClean();
+
+    if (username != null && password != null) {
+      connMess.authenticateAs(username!, password!);
+    }
 
     _client!.onConnected = () {
       _connectionStatusController.add(MqttConnectionState.connected);
@@ -133,12 +118,12 @@ class MQTTConnection {
       }
     };
 
-    // _client!.connectionMessage = connMess; // Assign the connect message
+    _client!.connectionMessage = connMess; 
 
     try {
 
       // print broker url, port
-      debugPrint('Connecting to broker NEW : $broker, port: 1883');
+      debugPrint('Connecting to broker MORNING : $broker, port: 1883');
       await _client!.connect();
     } on NoConnectionException catch (e) {
       if (!_connectionStatusController.isClosed) {

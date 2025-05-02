@@ -96,6 +96,10 @@ flutter:
 
   assets:
     - assets/fonts/
+    - assets/icon/
+    - assets/cert/ca_cert.pem
+    - assets/cert/client_cert.pem
+    - assets/cert/client_key.pem
 
   fonts:
     - family: Poppins
