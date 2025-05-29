@@ -92,3 +92,4 @@ TextTheme appTextStyle = TextTheme(
     letterSpacing: 1.5,
   ),
 );
+

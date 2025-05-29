@@ -9,6 +9,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:uuid/uuid.dart';
 
 class MQTTConnection {
+  
   String? broker;
   String? clientId;
   String? username;

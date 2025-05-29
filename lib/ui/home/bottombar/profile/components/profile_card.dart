@@ -15,7 +15,7 @@ class ProfileCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Card(
-          elevation: 4.0,
+          elevation: 0.0,
           margin: EdgeInsets.zero,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -43,8 +43,6 @@ class ProfileCard extends StatelessWidget {
                     context.read<ProfileBloc>().add(LogoutEvent());
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.primaryContainer,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32.0,
                       vertical: 12.0,

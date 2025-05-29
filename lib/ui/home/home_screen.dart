@@ -1,9 +1,7 @@
-import 'package:butterfly/core/mqtt/bloc/mqtt_bloc.dart';
 import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/home/bloc/home_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavBar.dart';
 import 'package:butterfly/ui/home/bottombar/BottomNavCubit.dart';
-import 'package:butterfly/ui/mqtt/mqtt_indicator.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,8 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    context.read<MqttBloc>().add(MqttConnectRequested());
+    // Uncomment the following line if you want to connect to MQTT on home screen initialization
+    // This is commented out to avoid connecting to MQTT on main screen load.
+    // context.read<MqttBloc>().add(MqttConnectRequested());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateSelectedIndex(context);
@@ -57,10 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 8,
-          title: const MqttConnectionIndicator(),
-        ),
         body: SafeArea(
           child: widget.navigationShell,
         ),

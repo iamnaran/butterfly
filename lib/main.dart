@@ -19,8 +19,8 @@ Future<void> main() async {
     await initHive();
     await configureDependenciesInjection();
     AppLogger.configureLogging();
-
     runApp(MyApp());
+
   }, (error, stackTrace) {
     AppLogger.showError('Caught an error: $error');
     AppLogger.showError('Stack trace: $stackTrace');
@@ -55,13 +55,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void _updateThemeForPlatformBrightness() {
-    final platformBrightness =
-        View.of(context).platformDispatcher.platformBrightness;
+    final brightness = MediaQuery.platformBrightnessOf(context);
+    _updateStatusBarStyle(brightness);
     setState(() {
-      _themeMode = platformBrightness == Brightness.light
-          ? ThemeMode.light
-          : ThemeMode.dark;
+      _themeMode = brightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
     });
+  }
+
+  void _updateStatusBarStyle(Brightness brightness) {
+    final isDarkMode = brightness == Brightness.dark;
+    final iconBrightness = isDarkMode ? Brightness.light : Brightness.dark;
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: iconBrightness,
+      statusBarIconBrightness: iconBrightness,
+    ));
   }
 
   @override
@@ -72,19 +81,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    MaterialTheme theme = MaterialTheme(appTextStyle);
-
-    final brightness = View.of(context).platformDispatcher.platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    final statusBarIconBrightness =
-        isDarkMode ? Brightness.light : Brightness.dark;
-    Color? statusBarColor;
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: statusBarColor,
-      statusBarBrightness: statusBarIconBrightness,
-      statusBarIconBrightness: statusBarIconBrightness,
-    ));
+    final theme = MaterialTheme(appTextStyle);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -92,10 +89,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: theme.light(),
       darkTheme: theme.dark(),
       themeMode: _themeMode,
-      routerConfig:
-          AppRouter.getRouter(getIt<PreferenceManager>().getLoggedIn()),
+      routerConfig: AppRouter.getRouter(getIt<PreferenceManager>().getLoggedIn()),
     );
   }
 }
+
 
 // dart run build_runner build --delete-conflicting-outputs

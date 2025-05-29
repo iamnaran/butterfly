@@ -34,18 +34,18 @@ class PostCard extends StatelessWidget {
             const SizedBox(height: 12),
 
             /// Tags
-            if (post.tags.isNotEmpty)
-              Wrap(
-                spacing: 6,
-                runSpacing: 4,
-                children: post.tags
-                    .map((tag) => Chip(
-                          label: Text(tag, style: Theme.of(context).textTheme.labelSmall),
-                          visualDensity: VisualDensity.compact,
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                        ))
-                    .toList(),
-              ),
+            // if (post.tags.isNotEmpty)
+            //   Wrap(
+            //     spacing: 6,
+            //     runSpacing: 4,
+            //     children: post.tags
+            //         .map((tag) => Chip(
+            //               label: Text(tag, style: Theme.of(context).textTheme.labelSmall),
+            //               visualDensity: VisualDensity.compact,
+            //               padding: const EdgeInsets.symmetric(horizontal: 6),
+            //             ))
+            //         .toList(),
+            //   ),
 
             const SizedBox(height: 12),
 

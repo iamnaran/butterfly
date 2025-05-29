@@ -97,7 +97,6 @@ class _PostScreenState extends State<NewFeedsScreen> {
               final posts = state.posts;
 
               return ListView.builder(
-                controller: _scrollController,
                 padding: const EdgeInsets.all(8),
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
