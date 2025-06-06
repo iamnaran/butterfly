@@ -1,85 +1,64 @@
-import 'dart:convert';
 
 import 'package:butterfly/core/database/entity/user/user_entity.dart';
 import 'package:butterfly/core/database/manager/user_db_manager.dart';
 import 'package:butterfly/core/model/auth/auth_mapper.dart';
-import 'package:butterfly/core/model/auth/user/user_response.dart';
-import 'package:butterfly/core/network/services/api_services.dart';
-import 'package:butterfly/core/network/base/endpoints.dart';
-import 'package:butterfly/core/network/base/resource.dart';
-import 'package:butterfly/core/network/network_request.dart';
+import 'package:butterfly/core/model/auth/login_request/login_request.dart';
+import 'package:butterfly/core/network/resource/resource.dart';
+import 'package:butterfly/core/network/resource/network_request.dart';
+import 'package:butterfly/core/network/services/auth/auth_service.dart';
 import 'package:butterfly/core/preference/pref_manager.dart';
 import 'package:butterfly/core/repository/auth/auth_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
 
 class AuthRepositoryImpl extends IAuthRepository {
-  final IApiServices networkapiservice;
+  final AuthService _authService;
   final UserDatabaseManager _userDatabaseManager;
   final PreferenceManager _preferenceManager;
 
-  AuthRepositoryImpl(this.networkapiservice, this._userDatabaseManager,
+  AuthRepositoryImpl(this._authService, this._userDatabaseManager,
       this._preferenceManager);
 
-  @override
-  Stream<Resource<UserEntity?>> login(String username, String password) {
-    final String url = Endpoints.login();
-    final data = {
-      'username': username,
-      'password': password,
-    };
 
-    AppLogger.showError("Login URL: $url, Data: $data");
-    // Create the NetworkRequest with logic for login
-    final networkRequest = NetworkRequest<UserEntity?>(
+   @override
+  Stream<Resource<UserEntity>> login(String username, String password) {
+    final loginRequest = LoginRequest(username: username, password: password);
+    AppLogger.showInfo("Initiating login for $username");
+
+    return NetworkRequest<UserEntity>(
       fetchFromApi: () async {
-        AppLogger.showError("Login Api Requested");
-
-        try {
-          // Fetch the user data from the API
-          final response =
-              await networkapiservice.getPostApiResponse(url, data);
-          AppLogger.showError(response.toString());
-          final Map<String, dynamic> jsonMap = jsonDecode(response);
-          final userResponse = UserResponse.fromJson(jsonMap);
-          return AuthMapper.mapUserResponseToEntity(userResponse);
-        } catch (e) {
-          AppLogger.showError("Login API Error: $e");
-          throw Exception('Login failed: $e');
-        }
+        final response = await _authService.login(loginRequest);
+        AppLogger.showInfo("Login success: ${response.username}");
+        return AuthMapper.mapUserResponseToEntity(response);
       },
-      saveApiResult: (userEntity) async {
-        await _userDatabaseManager.saveUser(userEntity!);
+      saveApiResult: (user) async {
+        await _userDatabaseManager.saveUser(user);
         await _preferenceManager.setLoggedIn(true);
+        await _preferenceManager.saveToken(user.accessToken);
       },
-      shouldFetch: (localData) {
-        return true;
-      },
-    );
-    AppLogger.showError("Login request initiated");
-
-    // Return the stream of the login process (API call and result saving)
-    return networkRequest.asStream(null); // Passing `null` as no local data
+    ).asStream(null);
   }
 
-  @override
+ @override
   void logout() {
     _userDatabaseManager.deleteAllUsers();
     _preferenceManager.setLoggedIn(false);
-    AppLogger.showError("User logged out");
+    _preferenceManager.clearToken();
+    AppLogger.showInfo("User logged out");
   }
 
   @override
-  Future<UserEntity?> getLoggedInUser() {
-    return _userDatabaseManager.getFirstAndOnlyUser().then((user) {
+  Future<UserEntity?> getLoggedInUser() async {
+    try {
+      final user = await _userDatabaseManager.getFirstAndOnlyUser();
       if (user != null) {
-        AppLogger.showError("User found: ${user.username}");
+        AppLogger.showInfo("Fetched user: ${user.username}");
       } else {
-        AppLogger.showError("No user found with ID:");
+        AppLogger.showError("No logged-in user found");
       }
       return user;
-    }).catchError((error) {
-      AppLogger.showError("Error fetching user: $error");
+    } catch (e) {
+      AppLogger.showError("Error fetching user: $e");
       return null;
-    });
+    }
   }
 }

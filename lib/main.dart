@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:butterfly/core/database/hive_initalizer.dart';
-import 'package:butterfly/core/di/di_module.dart';
+import 'package:butterfly/core/di/app_configuration.dart';
 import 'package:butterfly/core/preference/pref_manager.dart';
 import 'package:butterfly/navigation/router.dart';
 import 'package:butterfly/theme/theme.dart';
@@ -17,7 +17,7 @@ Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await initHive();
-    await configureDependenciesInjection();
+    await configureDependencies();
     AppLogger.configureLogging();
     runApp(MyApp());
 

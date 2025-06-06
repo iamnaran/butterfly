@@ -4,18 +4,18 @@ import 'package:butterfly/core/database/entity/post/post_entity.dart';
 import 'package:butterfly/core/database/manager/post_db_manager.dart';
 import 'package:butterfly/core/model/feeds/post_mapper.dart';
 import 'package:butterfly/core/model/feeds/post_response.dart';
-import 'package:butterfly/core/network/base/endpoints.dart';
-import 'package:butterfly/core/network/base/resource.dart';
-import 'package:butterfly/core/network/services/api_services.dart';
+import 'package:butterfly/core/network/resource/endpoints.dart';
+import 'package:butterfly/core/network/resource/resource.dart';
+import 'package:butterfly/core/network/services/post/post_service.dart';
 import 'package:butterfly/core/repository/post/post_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/foundation.dart';
 
 class PostRepositoryImpl extends IPostRepository {
-  final IApiServices networkapiservice;
+  final PostService _postService;
   final PostDatabaseManager _postDatabaseManager;
 
-  PostRepositoryImpl(this.networkapiservice, this._postDatabaseManager);
+  PostRepositoryImpl(this._postService, this._postDatabaseManager);
 
   @override
   Stream<Resource<List<PostEntity>>> getAllPosts() async* {
@@ -27,12 +27,12 @@ class PostRepositoryImpl extends IPostRepository {
     final initialData = await _postDatabaseManager.getAllPosts();
     yield Resource.success(data: initialData); // Emit initial DB data
     try {
-      final response = await networkapiservice.getGetApiResponse(url);
-      if (response == null) {
+      final response = await _postService.getPosts();
+      if (response.toString().isNotEmpty) {
         yield Resource.failed(error: Exception("No data received from API"));
         return;
       }
-      final Map<String, dynamic> jsonMap = jsonDecode(response);
+      final Map<String, dynamic> jsonMap = jsonDecode(response.toString());
       final postApiResponse = PostResponse.fromJson(jsonMap);
       final List<PostEntity> fetchedPosts =
           PostMapper.fromApiResponse(postApiResponse);

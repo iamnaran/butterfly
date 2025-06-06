@@ -2,6 +2,8 @@ class Endpoints {
   static final String _baseUrl = 'https://dummyjson.com';
 // 'https://dummyjson.com/auth/login'
 
+  static String baseUrl() => _baseUrl;
+
   // Auth Endpoints
   static String login() => '$_baseUrl/auth/login';
   static String register() => '$_baseUrl/auth/register';

@@ -1,4 +1,3 @@
-import 'package:butterfly/core/di/di_module.dart';
 import 'package:butterfly/core/mqtt/bloc/mqtt_bloc.dart';
 import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/ui/auth/bloc/login_bloc.dart';
@@ -18,6 +17,8 @@ import 'package:butterfly/utils/app_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../core/di/bloc_injection.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _exploreNavigatorKey = GlobalKey<NavigatorState>();

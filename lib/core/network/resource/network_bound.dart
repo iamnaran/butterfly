@@ -1,4 +1,4 @@
-import 'package:butterfly/core/network/base/resource.dart';
+import 'package:butterfly/core/network/resource/resource.dart';
 
 typedef FetchFromApi<T> = Future<T> Function();
 typedef SaveResult<T> = Future<void> Function(T item);

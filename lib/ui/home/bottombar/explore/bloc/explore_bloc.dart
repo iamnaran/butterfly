@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
-import 'package:butterfly/core/network/base/api_status.dart';
+import 'package:butterfly/core/network/resource/api_status.dart';
 import 'package:butterfly/core/repository/explore/explore_repository.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../../core/network/base/resource.dart';
+import '../../../../../core/network/resource/resource.dart';
 
 part 'explore_event.dart';
 part 'explore_state.dart';

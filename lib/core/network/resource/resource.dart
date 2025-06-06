@@ -1,5 +1,5 @@
 
-import 'package:butterfly/core/network/base/api_status.dart';
+import 'package:butterfly/core/network/resource/api_status.dart';
 
 class Resource<T> {
   final ApiStatus status;

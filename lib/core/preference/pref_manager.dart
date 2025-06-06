@@ -2,7 +2,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceKeys {
-  static const String isLoggedIn = 'isLoggedIn';
+  static const _isLoggedIn = 'isLoggedIn';
+  static const _tokenKey = 'auth_token';
+
 }
 
 class PreferenceManager {
@@ -15,11 +17,23 @@ class PreferenceManager {
   }
 
   Future<bool> setLoggedIn(bool value) async {
-    return await _prefs.setBool(SharedPreferenceKeys.isLoggedIn, value);
+    return await _prefs.setBool(SharedPreferenceKeys._isLoggedIn, value);
   }
 
   bool getLoggedIn() {
-    return _prefs.getBool(SharedPreferenceKeys.isLoggedIn) ?? false;
+    return _prefs.getBool(SharedPreferenceKeys._isLoggedIn) ?? false;
+  }
+
+  Future<void> saveToken(String token) async {
+    await _prefs.setString(SharedPreferenceKeys._tokenKey, token);
+  }
+
+  Future<String?> getToken() async {
+    return _prefs.getString(SharedPreferenceKeys._tokenKey);
+  }
+
+  Future<void> clearToken() async {
+    await _prefs.remove(SharedPreferenceKeys._tokenKey);
   }
   
 
