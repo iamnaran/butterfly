@@ -9,10 +9,10 @@ abstract class ExploreService {
   factory ExploreService(Dio dio, {String baseUrl, ParseErrorLogger? errorLogger,
 }) = _ExploreService;
 
-   @GET('/explore/products')
+   @GET('/products')
   Future<ProductApiResponse> getProducts();
 
-  @GET('/explore/product/{id}')
+  @GET('/product/{id}')
   Future<ProductData> getProductById(@Path('id') String id);
 
 }

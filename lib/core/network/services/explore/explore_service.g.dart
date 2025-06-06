@@ -34,7 +34,7 @@ class _ExploreService implements ExploreService {
     )
         .compose(
           _dio.options,
-          '/explore/products',
+          '/products',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -67,7 +67,7 @@ class _ExploreService implements ExploreService {
     )
         .compose(
           _dio.options,
-          '/explore/product/${id}',
+          '/product/${id}',
           queryParameters: queryParameters,
           data: _data,
         )

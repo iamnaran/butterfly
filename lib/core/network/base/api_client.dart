@@ -5,11 +5,14 @@ import 'package:dio/dio.dart';
 class ApiClient {
   final PreferenceManager _preferenceManager;
 
+  final String _baseUrl = 'https://dummyjson.com';
+
   ApiClient(this._preferenceManager);
 
   Dio createDio() {
     final dio = Dio(
       BaseOptions(
+        baseUrl: _baseUrl,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         responseType: ResponseType.json,

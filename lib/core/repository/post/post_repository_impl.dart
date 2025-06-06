@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:butterfly/core/database/entity/post/post_entity.dart';
 import 'package:butterfly/core/database/manager/post_db_manager.dart';
 import 'package:butterfly/core/model/feeds/post_mapper.dart';
-import 'package:butterfly/core/model/feeds/post_response.dart';
-import 'package:butterfly/core/network/resource/endpoints.dart';
 import 'package:butterfly/core/network/resource/resource.dart';
 import 'package:butterfly/core/network/services/post/post_service.dart';
 import 'package:butterfly/core/repository/post/post_repository.dart';
@@ -19,21 +15,12 @@ class PostRepositoryImpl extends IPostRepository {
 
   @override
   Stream<Resource<List<PostEntity>>> getAllPosts() async* {
-    final String url = Endpoints.getPosts();
-    AppLogger.showError("Post List URL: $url");
-
     // 1. Load data from DB asynchronously if available
     yield Resource.loading(); // Emit loading state
     final initialData = await _postDatabaseManager.getAllPosts();
     yield Resource.success(data: initialData); // Emit initial DB data
     try {
-      final response = await _postService.getPosts();
-      if (response.toString().isNotEmpty) {
-        yield Resource.failed(error: Exception("No data received from API"));
-        return;
-      }
-      final Map<String, dynamic> jsonMap = jsonDecode(response.toString());
-      final postApiResponse = PostResponse.fromJson(jsonMap);
+      final postApiResponse = await _postService.getPosts();
       final List<PostEntity> fetchedPosts =
           PostMapper.fromApiResponse(postApiResponse);
       _saveApiResult(fetchedPosts);

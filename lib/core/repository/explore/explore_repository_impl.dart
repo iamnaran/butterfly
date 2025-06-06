@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:butterfly/core/database/manager/product_db_manager.dart';
 import 'package:butterfly/core/database/entity/explore/product_entity.dart';
 import 'package:butterfly/core/model/explore/product_mapper.dart';
-import 'package:butterfly/core/model/explore/product_response.dart';
 import 'package:butterfly/core/network/resource/resource.dart';
 import 'package:butterfly/core/network/services/explore/explore_service.dart';
 import 'package:butterfly/core/repository/explore/explore_repository.dart';
@@ -22,9 +19,7 @@ class ExploreRepositoryImpl extends IExploreRepository {
     final initialData = await _productDatabaseManager.getAllProductEntities();
     yield Resource.success(data: initialData);
     try {
-      final response = await _exploreService.getProducts();
-      final Map<String, dynamic> jsonMap = jsonDecode(response.toString());
-      final productApiResponse = ProductApiResponse.fromJson(jsonMap);
+     final productApiResponse = await _exploreService.getProducts();
       final List<ProductEntity> fetchedProducts =
           ProductMapper.fromApiResponse(productApiResponse);
       _saveApiResult(fetchedProducts);
@@ -49,9 +44,8 @@ class ExploreRepositoryImpl extends IExploreRepository {
     try {
       final initialData = await _productDatabaseManager.getProductEntity(int.parse(id));
       yield Resource.success(data: initialData); 
-      final response = await _exploreService.getProductById(id);
-      final Map<String, dynamic> jsonMap = jsonDecode(response.toString());
-      final productApiResponse = ProductData.fromJson(jsonMap);
+      final productApiResponse = await _exploreService.getProductById(id);
+
       final ProductEntity fetchedProduct =
           ProductMapper.fromApiProductData(productApiResponse);
       yield Resource.success(data: fetchedProduct);
