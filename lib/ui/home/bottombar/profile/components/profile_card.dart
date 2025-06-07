@@ -1,4 +1,4 @@
-import 'package:butterfly/core/database/entity/user/user_entity.dart';
+import 'package:butterfly/data/local/database/entity/user/user_entity.dart';
 import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:butterfly/ui/home/bottombar/profile/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';

@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:butterfly/core/database/entity/user/user_entity.dart';
-import 'package:butterfly/core/network/resource/api_status.dart';
-import 'package:butterfly/core/network/resource/resource.dart';
-import 'package:butterfly/core/repository/auth/auth_repository.dart';
-import 'package:butterfly/utils/app_logger.dart';
+import 'package:butterfly/data/local/database/entity/user/user_entity.dart';
+import 'package:butterfly/domain/usecases/auth/GetLoggedInUserUseCase.dart';
+import 'package:butterfly/domain/usecases/auth/LoginRequestUseCase.dart';
+import 'package:butterfly/domain/usecases/auth/LogoutUsecase.dart';
 import 'package:equatable/equatable.dart';
 
 part 'login_event.dart';
@@ -11,40 +10,43 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
-  final IAuthRepository authRepository;
+  final LoginRequestUseCase loginRequestUseCase;
+  final LogoutUseCase logoutUseCase;
+  final GetLoggedInUserUseCase getLoggedInUserUseCase;
 
-  LoginBloc(this.authRepository) : super(LoginInitial()) {
-    on<LoginRequested>(_onLoginRequested);
+   LoginBloc(this.loginRequestUseCase, this.logoutUseCase, this.getLoggedInUserUseCase)
+      : super(LoginInitial()) {
+    on<LoginRequested>((event, emit) async {
+      emit(LoginLoading());
+      await emit.forEach(
+        loginRequestUseCase(username: event.username, password: event.password),
+        onData: (resource) {
+          if (resource.isSuccess) {
+            return LoginSuccess(resource.data!);
+          } else if (resource.isFailed) {
+            return LoginFailure(resource.error.toString());
+          }else if (resource.isLoading) {
+            return LoginLoading();
+          }
+          return LoginFailure('Unknown error');
+        },
+      );
+    });
+
+    on<LogoutRequested>((event, emit) {
+      logoutUseCase();
+      emit(LoggedOut());
+    });
+
+    on<CheckLoginStatus>((event, emit) async {
+      final user = await getLoggedInUserUseCase();
+      if (user != null) {
+        emit(LoginSuccess(user));
+      } else {
+        emit(LoggedOut());
+      }
+    });
   }
-
-  Future<void> _onLoginRequested(LoginRequested event, Emitter<LoginState> emit) async {
-  emit(LoginLoading());
-
-  try {
-    await emit.forEach<Resource<UserEntity?>>(
-      authRepository.login(event.username, event.password),
-      onData: (result) {
-        AppLogger.showLog('Bloc Login result: ${result.status}');
-
-        if (result.status == ApiStatus.loading) {
-          return LoginLoading();
-        } else if (result.status == ApiStatus.success) {
-          return LoginSuccess(result.data!);
-        } else if (result.status == ApiStatus.failure) {
-          return LoginFailure(result.message ?? 'Login failed');
-        }
-        return LoginFailure('Unknown error');
-      },
-      onError: (e, _) {
-        AppLogger.showLog('Bloc Login Error: $e');
-        return LoginFailure('Login failed: $e');
-      },
-    );
-  } catch (e) {
-    AppLogger.showLog('Bloc Login Catch Error: $e');
-    emit(LoginFailure('Unexpected error: $e'));
-  }
-}
 
   
   

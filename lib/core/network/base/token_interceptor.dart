@@ -1,6 +1,6 @@
 
 
-import 'package:butterfly/core/preference/pref_manager.dart';
+import 'package:butterfly/data/local/preference/pref_manager.dart';
 import 'package:dio/dio.dart';
 
 class TokenInterceptor extends Interceptor {

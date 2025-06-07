@@ -1,5 +1,5 @@
 import 'package:butterfly/core/network/base/token_interceptor.dart';
-import 'package:butterfly/core/preference/pref_manager.dart';
+import 'package:butterfly/data/local/preference/pref_manager.dart';
 import 'package:dio/dio.dart';
 
 class ApiClient {

@@ -1,4 +1,4 @@
-import 'package:butterfly/core/database/entity/explore/product_entity.dart';
+import 'package:butterfly/data/local/database/entity/explore/product_entity.dart';
 import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:butterfly/core/database/hive_initalizer.dart';
+import 'package:butterfly/data/local/database/hive_initalizer.dart';
 import 'package:butterfly/core/di/app_configuration.dart';
-import 'package:butterfly/core/preference/pref_manager.dart';
+import 'package:butterfly/data/local/preference/pref_manager.dart';
 import 'package:butterfly/navigation/router.dart';
 import 'package:butterfly/theme/theme.dart';
 import 'package:butterfly/theme/typography.dart';

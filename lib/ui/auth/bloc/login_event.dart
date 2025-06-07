@@ -16,3 +16,14 @@ class LoginRequested extends LoginEvent {
   @override
   List<Object> get props => [username, password];
 }
+
+
+// Trigger logout
+class LogoutRequested extends LoginEvent {
+  const LogoutRequested();
+}
+
+// Check login status on app start
+class CheckLoginStatus extends LoginEvent {
+  const CheckLoginStatus();
+}

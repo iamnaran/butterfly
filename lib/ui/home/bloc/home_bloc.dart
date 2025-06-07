@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:butterfly/core/repository/auth/auth_repository.dart';
+import 'package:butterfly/data/repository/auth/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 
 part 'home_event.dart';

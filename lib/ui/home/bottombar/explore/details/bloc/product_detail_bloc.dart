@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:butterfly/core/database/entity/explore/product_entity.dart';
+import 'package:butterfly/data/local/database/entity/explore/product_entity.dart';
 import 'package:butterfly/core/network/resource/api_status.dart';
 import 'package:butterfly/core/network/resource/resource.dart';
-import 'package:butterfly/core/repository/explore/explore_repository.dart';
+import 'package:butterfly/data/repository/explore/explore_repository.dart';
 import 'package:equatable/equatable.dart';
 
 part 'product_detail_event.dart';

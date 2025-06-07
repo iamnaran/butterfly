@@ -1,4 +1,4 @@
-import 'package:butterfly/core/database/entity/explore/product_entity.dart';
+import 'package:butterfly/data/local/database/entity/explore/product_entity.dart';
 import 'package:butterfly/navigation/routes.dart';
 import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:butterfly/ui/home/bottombar/explore/bloc/explore_bloc.dart';

@@ -1,4 +1,4 @@
-import 'package:butterfly/core/database/entity/post/post_entity.dart';
+import 'package:butterfly/data/local/database/entity/post/post_entity.dart';
 import 'package:butterfly/theme/widgets/text/app_text.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/posts/create_post_screen.dart';

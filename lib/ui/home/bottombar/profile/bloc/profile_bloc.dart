@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:butterfly/core/database/entity/user/user_entity.dart';
-import 'package:butterfly/core/repository/auth/auth_repository.dart';
+import 'package:butterfly/data/local/database/entity/user/user_entity.dart';
+import 'package:butterfly/data/repository/auth/auth_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:equatable/equatable.dart';
 

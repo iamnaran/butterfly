@@ -1,4 +1,4 @@
-import 'package:butterfly/core/database/entity/post/post_entity.dart';
+import 'package:butterfly/data/local/database/entity/post/post_entity.dart';
 import 'package:butterfly/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 

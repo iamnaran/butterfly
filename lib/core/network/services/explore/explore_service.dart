@@ -1,4 +1,4 @@
-import 'package:butterfly/core/model/explore/product_response.dart';
+import 'package:butterfly/data/remote/model/explore/product_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

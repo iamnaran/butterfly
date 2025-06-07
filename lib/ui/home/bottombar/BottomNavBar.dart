@@ -1,4 +1,3 @@
-import 'package:butterfly/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -13,28 +12,45 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLogger.showError('BottomNavBar: selectedIndex = $selectedIndex');
-
-    return NavigationBar(
-      selectedIndex: selectedIndex,
-      onDestinationSelected: onItemTapped,
-      destinations: const <NavigationDestination>[
-        NavigationDestination(
-          icon: Icon(Icons.explore),
-          label: 'Explore',
+    return Theme(
+      data: Theme.of(context).copyWith(
+        navigationBarTheme: NavigationBarThemeData(
+          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+                color: Colors.blue,
+              );
+            }
+            return const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.normal,
+              color: Colors.grey,
+            );
+          }),
         ),
-        
-        NavigationDestination(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-
-        NavigationDestination(
-          icon: Icon(Icons.newspaper_rounded),
-          label: 'News Feeds',
-        ),
-        
-      ],
+      ),
+      child: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: onItemTapped,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.explore),
+            label: 'Explore',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.newspaper_rounded),
+            label: 'News Feeds',
+          ),
+        ],
+      ),
     );
   }
+
+
 }

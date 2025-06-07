@@ -1,4 +1,4 @@
-import 'package:butterfly/core/model/feeds/post_response.dart';
+import 'package:butterfly/data/remote/model/feeds/post_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

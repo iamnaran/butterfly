@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:butterfly/core/database/entity/post/post_entity.dart';
-import 'package:butterfly/core/repository/post/post_repository.dart';
+import 'package:butterfly/data/local/database/entity/post/post_entity.dart';
+import 'package:butterfly/data/repository/post/post_repository.dart';
 import 'package:butterfly/utils/app_logger.dart';
 import 'package:equatable/equatable.dart';
 
@@ -18,7 +18,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _onFetchPosts(FetchPosts event, Emitter<PostState> emit) async {
     
   emit(PostLoading());
-
     await emit.forEach(
       _postRepository.getAllPosts(),
       onData: (resource) {
