@@ -111,6 +111,9 @@ flutter_native_splash:
     color_dark: "#000000"
     image_dark: assets/icon/app_logo_splash_dark.png
   ios: true
+  android: true
+  web: true
+  fullscreen: true
 
 # The following section is specific to Flutter packages.
 flutter:
