@@ -8,7 +8,6 @@ Future<void> initHive() async {
   deleteHiveDisk();
   Hive.registerAdapter(UserEntityAdapter());
   Hive.registerAdapter(ProductEntityAdapter());
-
   Hive.registerAdapter(PostEntityAdapter());
 }
 
