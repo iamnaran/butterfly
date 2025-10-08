@@ -1,4 +1,4 @@
-package com.example.butterfly
+package com.iamnaran.butterfly
 
 import io.flutter.embedding.android.FlutterActivity
 

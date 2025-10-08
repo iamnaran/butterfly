@@ -20,7 +20,6 @@ Future<void> main() async {
     await configureDependencies();
     AppLogger.configureLogging();
     runApp(MyApp());
-
   }, (error, stackTrace) {
     AppLogger.showError('Caught an error: $error');
     AppLogger.showError('Stack trace: $stackTrace');
@@ -58,18 +57,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final brightness = MediaQuery.platformBrightnessOf(context);
     _updateStatusBarStyle(brightness);
     setState(() {
-      _themeMode = brightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
+      _themeMode =
+          brightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
   void _updateStatusBarStyle(Brightness brightness) {
     final isDarkMode = brightness == Brightness.dark;
-    final iconBrightness = isDarkMode ? Brightness.light : Brightness.dark;
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: iconBrightness,
-      statusBarIconBrightness: iconBrightness,
+      statusBarBrightness: isDarkMode
+          ? Brightness.dark // iOS: text/icons for light background
+          : Brightness.light,
+      statusBarIconBrightness: isDarkMode
+          ? Brightness.light // Android: icons for dark background
+          : Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
     ));
   }
 
@@ -89,10 +92,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: theme.light(),
       darkTheme: theme.dark(),
       themeMode: _themeMode,
-      routerConfig: AppRouter.getRouter(getIt<PreferenceManager>().getLoggedIn()),
+      routerConfig:
+          AppRouter.getRouter(getIt<PreferenceManager>().getLoggedIn()),
     );
   }
 }
-
 
 // dart run build_runner build --delete-conflicting-outputs
