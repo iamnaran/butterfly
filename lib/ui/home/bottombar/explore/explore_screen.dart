@@ -15,6 +15,9 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
+
+  late final void Function(String) _onProductTap;
+
   void _navigateToProductDetail(BuildContext context, String productId) {
     context.pushNamed(
       Routes.productDetailRouteName,
@@ -25,6 +28,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   void initState() {
     super.initState();
+     _onProductTap = (productId) => context.pushNamed(
+          Routes.productDetailRouteName,
+          pathParameters: {'productId': productId},
+        );
+
     context.read<ExploreBloc>().add(const FetchProductList());
   }
 
@@ -71,11 +79,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
         return ProductListItem(
           key: ValueKey(product.id),
           product: product,
-          onProductTap: (productId) =>
-              _navigateToProductDetail(context, productId),
+          onProductTap: _onProductTap,
         );
       },
       cacheExtent: 1000.0,
     );
   }
+  
 }
