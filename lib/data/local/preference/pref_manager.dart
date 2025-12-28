@@ -1,10 +1,9 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceKeys {
   static const _isLoggedIn = 'isLoggedIn';
   static const _tokenKey = 'auth_token';
-
+  static const _isModernHome = 'is_modern_home';
 }
 
 class PreferenceManager {
@@ -35,7 +34,12 @@ class PreferenceManager {
   Future<void> clearToken() async {
     await _prefs.remove(SharedPreferenceKeys._tokenKey);
   }
-  
 
+  Future<bool> setModernHome(bool value) async {
+    return await _prefs.setBool(SharedPreferenceKeys._isModernHome, value);
+  }
 
+  bool getModernHome() {
+    return _prefs.getBool(SharedPreferenceKeys._isModernHome) ?? true;
+  }
 }

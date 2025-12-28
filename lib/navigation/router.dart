@@ -12,7 +12,7 @@ import 'package:butterfly/ui/home/bottombar/feeds/bloc/post_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/feeds/new_feeds_screen.dart';
 import 'package:butterfly/ui/home/bottombar/profile/bloc/profile_bloc.dart';
 import 'package:butterfly/ui/home/bottombar/profile/profile_screen.dart';
-import 'package:butterfly/ui/home/home_screen.dart';
+import 'package:butterfly/ui/home/home_switcher.dart';
 import 'package:butterfly/utils/app_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,8 +26,13 @@ final _profileNavigatorKey = GlobalKey<NavigatorState>();
 final _newsFeedsNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
+  static GoRouter? _router;
+
   static GoRouter getRouter(bool isLoggedIn) {
-    return GoRouter(
+    if (_router != null) {
+      return _router!;
+    }
+    _router = GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: isLoggedIn ? Routes.explorePath : Routes.loginPath,
       routes: [
@@ -41,7 +46,7 @@ class AppRouter {
           ),
         ),
 
-        /// Bottom Navigation 
+        /// Bottom Navigation
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
             return MultiBlocProvider(
@@ -50,7 +55,7 @@ class AppRouter {
                 BlocProvider(create: (_) => getIt<BottomNavCubit>()),
                 BlocProvider(create: (_) => getIt<MqttBloc>()),
               ],
-              child: HomeScreen(navigationShell: navigationShell),
+              child: HomeSwitcher(navigationShell: navigationShell),
             );
           },
           branches: [
@@ -60,36 +65,32 @@ class AppRouter {
               routes: [
                 GoRoute(
                   path: Routes.explorePath,
-                  
                   name: Routes.exploreRouteName,
                   pageBuilder: (context, state) => AppTransitions.fade(
                     context: context,
                     state: state,
-
                     child: BlocProvider(
                       create: (_) => getIt<ExploreBloc>(),
                       child: const ExploreScreen(),
                     ),
-
                   ),
                   routes: [
                     GoRoute(
                       path: 'product/:productId',
                       name: Routes.productDetailRouteName,
-                        builder: (context, state) {
-                        final productId = int.parse(state.pathParameters['productId']!);
+                      builder: (context, state) {
+                        final productId =
+                            int.parse(state.pathParameters['productId']!);
                         return BlocProvider(
                           create: (_) => getIt<ProductDetailBloc>(),
                           child: ProductDetailScreen(productId: productId),
                         );
-                        },
-
+                      },
                     ),
                   ],
                 ),
               ],
             ),
-
 
             /// Profile Branch
             StatefulShellBranch(
@@ -98,7 +99,6 @@ class AppRouter {
                 GoRoute(
                   path: Routes.profilePath,
                   name: Routes.profileRouteName,
-
                   pageBuilder: (context, state) => AppTransitions.fade(
                     context: context,
                     state: state,
@@ -107,7 +107,6 @@ class AppRouter {
                       child: const ProfileScreen(),
                     ),
                   ),
-
                 ),
               ],
             ),
@@ -119,17 +118,14 @@ class AppRouter {
                 GoRoute(
                   path: Routes.newsFeeds,
                   name: Routes.newsFeedsName,
-
                   pageBuilder: (context, state) => AppTransitions.fade(
                     context: context,
                     state: state,
-
-                     child: BlocProvider(
+                    child: BlocProvider(
                       create: (_) => getIt<PostBloc>(),
-                      child:  NewFeedsScreen(),
+                      child: NewFeedsScreen(),
                     ),
                   ),
-
                 ),
               ],
             ),
@@ -137,5 +133,6 @@ class AppRouter {
         ),
       ],
     );
+    return _router!;
   }
 }

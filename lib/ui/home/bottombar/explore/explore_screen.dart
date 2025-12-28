@@ -15,7 +15,6 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-
   late final void Function(String) _onProductTap;
 
   void _navigateToProductDetail(BuildContext context, String productId) {
@@ -28,7 +27,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   void initState() {
     super.initState();
-     _onProductTap = (productId) => context.pushNamed(
+    _onProductTap = (productId) => context.pushNamed(
           Routes.productDetailRouteName,
           pathParameters: {'productId': productId},
         );
@@ -39,9 +38,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const AppText(text: 'Explore'),
-      ),
+      backgroundColor: Colors.transparent,
       body: BlocBuilder<ExploreBloc, ExploreState>(
         builder: (context, state) {
           if (state is ProductListLoading) {
@@ -85,5 +82,4 @@ class _ExploreScreenState extends State<ExploreScreen> {
       cacheExtent: 1000.0,
     );
   }
-  
 }

@@ -4,6 +4,7 @@ import 'package:butterfly/data/local/database/hive_initalizer.dart';
 import 'package:butterfly/core/di/app_configuration.dart';
 import 'package:butterfly/data/local/preference/pref_manager.dart';
 import 'package:butterfly/navigation/router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:butterfly/theme/theme.dart';
 import 'package:butterfly/theme/typography.dart';
 import 'package:butterfly/utils/app_logger.dart';
@@ -36,10 +37,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   ThemeMode _themeMode = ThemeMode.system;
 
+  late final GoRouter _router;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _router = AppRouter.getRouter(getIt<PreferenceManager>().getLoggedIn());
   }
 
   @override
@@ -92,8 +96,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: theme.light(),
       darkTheme: theme.dark(),
       themeMode: _themeMode,
-      routerConfig:
-          AppRouter.getRouter(getIt<PreferenceManager>().getLoggedIn()),
+      routerConfig: _router,
     );
   }
 }

@@ -11,50 +11,61 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Card(
-          elevation: 0.0,
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(user.image),
-                ),
-                const SizedBox(height: 16.0),
-                AppText(
-                  text: '${user.firstName} ${user.lastName}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  fontWeight: FontWeight.bold,
-                ),
-                const SizedBox(height: 8.0),
-                AppText(
-                    text: user.email,
-                    style: Theme.of(context).textTheme.bodySmall),
-                const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    // Dispatch the logout event when the button is pressed
-                    context.read<ProfileBloc>().add(LogoutEvent());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0,
-                      vertical: 12.0,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Card(
+                  elevation: 0.0,
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(user.image),
+                        ),
+                        const SizedBox(height: 16.0),
+                        AppText(
+                          text: '${user.firstName} ${user.lastName}',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 8.0),
+                        AppText(
+                            text: user.email,
+                            style: Theme.of(context).textTheme.bodySmall),
+                        const SizedBox(height: 20.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Dispatch the logout event when the button is pressed
+                            context.read<ProfileBloc>().add(LogoutEvent());
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32.0,
+                              vertical: 12.0,
+                            ),
+                          ),
+                          child: AppText(text: 'Logout'),
+                        ),
+                      ],
                     ),
                   ),
-                  child: AppText(text: 'Logout'),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

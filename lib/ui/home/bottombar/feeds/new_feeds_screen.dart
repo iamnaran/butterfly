@@ -62,7 +62,7 @@ class _PostScreenState extends State<NewFeedsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const AppText(text: 'Posts')),
+      backgroundColor: Colors.transparent,
       body: BlocListener<PostBloc, PostState>(
         listener: (context, state) {
           if (state is PostCreating) {
@@ -75,7 +75,6 @@ class _PostScreenState extends State<NewFeedsScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Your post has been created!")),
             );
-            
           } else if (state is PostCreatingError) {
             // Show error message if any
             ScaffoldMessenger.of(context).showSnackBar(

@@ -5,7 +5,7 @@ class ProfileWidget extends StatelessWidget {
   final String name;
   final String email;
 
-  const ProfileWidget({required this.name, required this.email});
+  const ProfileWidget({super.key, required this.name, required this.email});
 
   @override
   Widget build(BuildContext context) {

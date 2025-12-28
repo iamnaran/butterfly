@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const AppText(text: 'Profile')),
+        backgroundColor: Colors.transparent,
         body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {

@@ -12,7 +12,7 @@ class PostCard extends StatelessWidget {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: Theme.of(context).colorScheme.surface,
+      color: Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
